@@ -716,7 +716,6 @@ ExtrudeGeometryFilter::buildWallGeometry(const Structure&     structure,
     // TODO: reconsider this, given the new Structure setup
     // it won't actual smooth corners since we don't have shared edges.
 	//GAJ Normals comming out reversed
-
 	walls->getOrCreateStateSet()->setAttributeAndModes(new osg::FrontFace(osg::FrontFace::COUNTER_CLOCKWISE), osg::StateAttribute::ON);
 //	walls->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
 	
@@ -1047,8 +1046,10 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
 				RoofHelper->Add_Mat_Index(roofTextureHasMatIndex, roofTextureMatIndexName);
 			}
 		}
+
 		// iterator over the parts.
         GeometryIterator iter( input->getGeometry(), false );
+        bool hasHoles = false;
         while( iter.hasMore() )
         {
             Geometry* part = iter.next();
@@ -1065,6 +1066,10 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
 
                 // prep the shapes by making sure all polys are open:
                 static_cast<Polygon*>(part)->open();
+                if (static_cast<Polygon*>(part)->getHoles().size() > 0)
+                {
+                    hasHoles = true;
+                }
             }
 
             // fire up the outline geometry if we have a line symbol.
@@ -1188,7 +1193,10 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
                 {
                     // Get a stateset for the individual wall stateset
                     context.resourceCache()->getOrCreateStateSet(wallSkin, wallStateSet, context.getDBOptions());
-					wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
+                    if(hasHoles)
+                        wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT_AND_BACK), osg::StateAttribute::ON);
+                    else
+					    wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
 					if (wallSkin->materialURI().isSet())
 					{
 						context.resourceCache()->getOrCreateMatStateSet(wallSkin, wallStateSet, context.getDBOptions());
@@ -1209,7 +1217,7 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
 				if (roofTextureIsFromImage)
 				{
 					roofStateSet = RoofHelper->CreateSetState(context.getDBOptions());
-					roofStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
+					roofStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT), osg::StateAttribute::ON);
 					if (roofTextureHasMatIndex)
 						RoofHelper->AddMat2SetState(roofStateSet, context.getDBOptions());
 				}
@@ -1410,6 +1418,7 @@ void ExtrudeGeomGDALHelper::Open_Image()
 		delete hSRS;
 		GDALClose(poDataset);
 	}
+    hSRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
 
 	_num_bands = poDataset->GetRasterCount();
 	_RsizeX = poDataset->GetRasterXSize();

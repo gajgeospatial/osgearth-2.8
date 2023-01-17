@@ -4,4 +4,12 @@
     <LocalDebuggerCommandArguments>"E:\EarthFiles\CDB_PlanetData.earth"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs2019_Release|x64'">
+    <LocalDebuggerCommandArguments>"E:\EarthFiles\CDB_PlanetData.earth"</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs2022_Release|x64'">
+    <LocalDebuggerCommandArguments>"E:\EarthFiles\CDB_PlanetData.earth"</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

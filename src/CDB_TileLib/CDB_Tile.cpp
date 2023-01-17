@@ -3227,6 +3227,7 @@ bool CDB_Tile::Save(void)
 
 	OGRSpatialReference *CDB_SRS = new OGRSpatialReference();
 	CDB_SRS->SetWellKnownGeogCS("WGS84");
+	CDB_SRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
 	if (m_GDAL.poDataset)
 	{
 		Close_Dataset();
@@ -4035,6 +4036,7 @@ void OGR_File::Set_oSRS(void)
 	{
 		m_oSRS = new OGRSpatialReference();
 		m_oSRS->SetWellKnownGeogCS("WGS84");
+		m_oSRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
 	}
 }
 

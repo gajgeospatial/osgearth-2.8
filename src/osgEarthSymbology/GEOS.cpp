@@ -61,7 +61,7 @@ namespace
         {
             coords->push_back( coords->front() );
         }
-        geom::CoordinateSequence* seq = factory->create( coords );
+        geom::CoordinateSequence* seq = factory->create( coords ).get();
 
         return seq;
     }
@@ -138,12 +138,12 @@ namespace
                     if ( shell )
                     {
                         const Symbology::Polygon* poly = static_cast<const Symbology::Polygon*>(input);
-                        std::vector<geom::Geometry*>* holes = poly->getHoles().size() > 0 ? new std::vector<geom::Geometry*>() : 0L;
+                        std::vector<geom::LinearRing*>* holes = poly->getHoles().size() > 0 ? new std::vector<geom::LinearRing*>() : 0L;
                         if (holes)
                         {
                             for( Symbology::RingCollection::const_iterator r = poly->getHoles().begin(); r != poly->getHoles().end(); ++r )
                             {
-                                geom::Geometry* hole = import( r->get(), f );
+                                geom::LinearRing* hole = (geom::LinearRing*)import( r->get(), f );
                                 if ( hole ) holes->push_back( hole );
                             }
                             if (holes->size() == 0)
@@ -152,7 +152,7 @@ namespace
                                 holes = 0L;
                             }
                         }
-                        output = f->createPolygon( shell, holes );
+                        output = (geom::Polygon*)f->createPolygon(shell, holes);
                     }
                 
                     break;
@@ -216,7 +216,8 @@ GEOSContext::GEOSContext()
     geos::geom::PrecisionModel* pm = new geos::geom::PrecisionModel(geom::PrecisionModel::FLOATING);
 
     // Factory will clone the PM
-    _factory = new geos::geom::GeometryFactory( pm );
+    _factory = geos::geom::GeometryFactory::create(pm);
+//  _factory = new geos::geom::GeometryFactory(pm);
 
     // Delete the template.
     delete pm;
@@ -224,7 +225,7 @@ GEOSContext::GEOSContext()
 
 GEOSContext::~GEOSContext()
 {
-    delete _factory;
+    _factory->destroy();
 }
 
 geom::Geometry*
@@ -233,7 +234,7 @@ GEOSContext::importGeometry(const Symbology::Geometry* input)
     geom::Geometry* output = 0L;
     if ( input && input->isValid() )
     {
-        output = import( input, _factory );
+        output = import( input, _factory.get() );
 
         // if output is ok, it will have a pointer to f. this is probably a leak.
         // TODO: Check whether this is a leak!! -gw
@@ -333,8 +334,8 @@ GEOSContext::disposeGeometry(geom::Geometry* input)
     {
         geom::GeometryFactory* f = const_cast<geom::GeometryFactory*>(input->getFactory());
         _factory->destroyGeometry(input);
-        if ( f != _factory )
-            delete f;
+        if ( f != _factory.get() )
+             f->destroy();
     }
 }
 
