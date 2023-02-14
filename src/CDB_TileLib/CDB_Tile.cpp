@@ -2645,8 +2645,8 @@ bool CDB_Tile::Initialize_Tile_Drivers(std::string &ErrorMsg)
 
 	std::string	cdb_JP2DriverNames[JP2DRIVERCNT];
 	//The JP2 Driver Names should be ordered based on read performance however this has not been done yet.
-	cdb_JP2DriverNames[0] = "JP2ECW";		//ERDAS supplied JP2 Plugin
-	cdb_JP2DriverNames[1] = "JP2OpenJPEG";  //LibOpenJPEG2000
+	cdb_JP2DriverNames[1] = "JP2ECW";		//ERDAS supplied JP2 Plugin
+	cdb_JP2DriverNames[0] = "JP2OpenJPEG";  //LibOpenJPEG2000
 	cdb_JP2DriverNames[2] = "JPEG2000";	    //JASPER
 	cdb_JP2DriverNames[3] = "JP2KAK";		//Kakadu Library
 	cdb_JP2DriverNames[4] = "JP2MrSID";	    //MR SID SDK

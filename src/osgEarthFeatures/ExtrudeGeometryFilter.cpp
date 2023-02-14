@@ -1196,8 +1196,11 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
                     if(hasHoles)
                         wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT_AND_BACK), osg::StateAttribute::ON);
                     else
-					    wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
-					if (wallSkin->materialURI().isSet())
+                    {
+//                      wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
+                        wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT), osg::StateAttribute::ON);
+                    }
+                    if (wallSkin->materialURI().isSet())
 					{
 						context.resourceCache()->getOrCreateMatStateSet(wallSkin, wallStateSet, context.getDBOptions());
 					}
