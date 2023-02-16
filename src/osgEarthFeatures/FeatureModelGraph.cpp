@@ -1559,8 +1559,14 @@ FeatureModelGraph::createStyleGroup(const Style&  style, osg::ref_ptr<FeatureCur
 
 	if (cursor.valid() && cursor->hasMore())
 	{
-
-		FilterContext context(_session.get(), featureProfile, extent, index);
+        //Base Shader Policy on readoptions
+        std::string optionsString = readOptions->getOptionString();
+        osgEarth::ShaderPolicy ShadPol = SHADERPOLICY_GENERATE;
+        if (optionsString.find("DisableShaders") != std::string::npos)
+        {
+            ShadPol = SHADERPOLICY_DISABLE;
+        }
+		FilterContext context(_session.get(), featureProfile, extent, index, ShadPol);
 
 		// start by culling our feature list to the working extent. By default, this is done by
 		// checking feature centroids. But the user can override this to crop feature geometry to

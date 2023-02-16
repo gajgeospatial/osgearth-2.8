@@ -528,14 +528,16 @@ GeometryCompiler::compile(FeatureList&          workingSet,
 
     if (Registry::capabilities().supportsGLSL())
     {
-        if ( _options.shaderPolicy() == SHADERPOLICY_GENERATE )
+        bool doShaders = (_options.shaderPolicy() == SHADERPOLICY_GENERATE) && (context.shaderPolicy() == SHADERPOLICY_GENERATE);
+        bool disableShaders = (_options.shaderPolicy() == SHADERPOLICY_DISABLE) || (context.shaderPolicy() == SHADERPOLICY_DISABLE);
+        if ( doShaders )
         {
             // no ss cache because we will optimize later.
             Registry::shaderGenerator().run( 
                 resultGroup.get(),
                 "osgEarth.GeomCompiler" );
         }
-        else if ( _options.shaderPolicy() == SHADERPOLICY_DISABLE )
+        else if ( disableShaders )
         {
             resultGroup->getOrCreateStateSet()->setAttributeAndModes(
                 new osg::Program(),

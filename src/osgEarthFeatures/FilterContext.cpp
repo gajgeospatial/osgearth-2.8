@@ -26,13 +26,14 @@ using namespace osgEarth::Features;
 FilterContext::FilterContext(Session*               session,
                              const FeatureProfile*  profile,
                              const GeoExtent&       workingExtent,
-                             FeatureIndexBuilder*   index ) :
+                             FeatureIndexBuilder*   index,
+                             osgEarth::ShaderPolicy ShaderPol) :
 _session     ( session ),
 _profile     ( profile ),
 _extent      ( workingExtent, workingExtent ),
 _isGeocentric( false ),
 _index       ( index ),
-_shaderPolicy( osgEarth::SHADERPOLICY_GENERATE )
+_shaderPolicy( ShaderPol )
 {
     if ( session )
     {
