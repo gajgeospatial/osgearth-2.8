@@ -1199,11 +1199,14 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
                     {
 //                      wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
                         wallStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT), osg::StateAttribute::ON);
+                        wallStateSet->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
                     }
                     if (wallSkin->materialURI().isSet())
 					{
 						context.resourceCache()->getOrCreateMatStateSet(wallSkin, wallStateSet, context.getDBOptions());
-					}
+                        wallStateSet->setTextureMode(1, GL_TEXTURE_2D, osg::StateAttribute::ON);
+                    }
+
 				}
             }
 
@@ -1221,17 +1224,23 @@ ExtrudeGeometryFilter::process( FeatureList& features, FilterContext& context )
 				{
 					roofStateSet = RoofHelper->CreateSetState(context.getDBOptions());
 					roofStateSet->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT), osg::StateAttribute::ON);
-					if (roofTextureHasMatIndex)
-						RoofHelper->AddMat2SetState(roofStateSet, context.getDBOptions());
+                    roofStateSet->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+                    if (roofTextureHasMatIndex)
+                    {
+                        RoofHelper->AddMat2SetState(roofStateSet, context.getDBOptions());
+                        roofStateSet->setTextureMode(1, GL_TEXTURE_2D, osg::StateAttribute::ON);
+                    }
 				}
 				else if ( roofSkin )
                 {
                     // Get a stateset for the individual roof skin
                     context.resourceCache()->getOrCreateStateSet(roofSkin, roofStateSet, context.getDBOptions());
-					if (roofSkin->materialURI().isSet())
+                    roofStateSet->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+                    if (roofSkin->materialURI().isSet())
 					{
 						context.resourceCache()->getOrCreateMatStateSet(roofSkin, roofStateSet, context.getDBOptions());
-					}
+                        roofStateSet->setTextureMode(1, GL_TEXTURE_2D, osg::StateAttribute::ON);
+                    }
                 }
             }
 
