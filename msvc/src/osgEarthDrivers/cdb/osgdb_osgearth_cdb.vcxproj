@@ -502,7 +502,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -520,7 +520,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -538,7 +538,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -556,7 +556,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -574,7 +574,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -592,7 +592,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -610,7 +610,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;gdal_i.lib;zlib.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -628,7 +628,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -646,7 +646,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -664,7 +664,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -682,7 +682,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -700,7 +700,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -718,7 +718,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -736,7 +736,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarthd.lib;CDB_TileLibd.lib;ws2_32.lib;winmm.lib;wldap32.lib;osgd.lib;osgTextd.lib;osgSimd.lib;osgTerraind.lib;osgDBd.lib;osgFXd.lib;osgViewerd.lib;osgGAd.lib;osgShadowd.lib;OpenThreadsd.lib;zlib.lib;gdal_i.lib;osgManipulatord.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(TargetName)d.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -758,7 +758,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2015_Release|Win32'">
@@ -779,7 +779,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2017_Release|Win32'">
@@ -800,7 +800,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2019_Release|Win32'">
@@ -821,7 +821,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2022_Release|Win32'">
@@ -842,7 +842,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2012_Release|Win32'">
@@ -863,7 +863,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2010_Release|Win32'">
@@ -884,7 +884,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -905,7 +905,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2015_Release|x64'">
@@ -926,7 +926,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2017_Release|x64'">
@@ -947,7 +947,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2019_Release|x64'">
@@ -968,7 +968,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2022_Release|x64'">
@@ -989,7 +989,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2012_Release|x64'">
@@ -1010,7 +1010,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vs2010_Release|x64'">
@@ -1031,7 +1031,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;osgEarth.lib;CDB_TileLib.lib;ws2_32.lib;winmm.lib;wldap32.lib;osg.lib;osgUtil.lib;osgSim.lib;osgTerrain.lib;osgDB.lib;osgFX.lib;osgViewer.lib;osgText.lib;osgGA.lib;osgShadow.lib;OpenThreads.lib;gdal_i.lib;zlib.lib;osgManipulator.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(OSG_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(GDAL_DIR)\msvc\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);..\..\..\..\..\$(ZLIB_DIR)\vc$(PlatformToolsetVersion)\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
