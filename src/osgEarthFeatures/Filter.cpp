@@ -138,6 +138,11 @@ FeaturesToNodeFilter::computeLocalizers( const FilterContext& context )
     computeLocalizers(context, context.extent().get(), _world2local, _local2world);
 }
 
+void FeaturesToNodeFilter::computeLocalizers(osg::Vec3d centroid, const FilterContext& context)
+{
+    computeLocalizers(context, centroid, _world2local, _local2world);
+}
+
 void
 FeaturesToNodeFilter::computeLocalizers( const FilterContext& context, const osgEarth::GeoExtent &extent, osg::Matrixd &out_w2l, osg::Matrixd &out_l2w )
 {
@@ -172,6 +177,33 @@ FeaturesToNodeFilter::computeLocalizers( const FilterContext& context, const osg
                 out_w2l.makeTranslate( -centroid );
                 out_l2w.invert( out_w2l );
             }
+        }
+    }
+}
+
+void
+FeaturesToNodeFilter::computeLocalizers(const FilterContext& context, osg::Vec3d centroid, osg::Matrixd& out_w2l, osg::Matrixd& out_l2w)
+{
+    if (context.isGeoreferenced())
+    {
+        if (context.getSession()->getMapInfo().isGeocentric())
+        {
+            const SpatialReference* geogSRS = context.profile()->getSRS()->getGeographicSRS();
+             osg::Vec3d centroidECEF;
+             geogSRS->transform(centroid, geogSRS->getECEF(), centroidECEF);
+             geogSRS->getECEF()->createLocalToWorld(centroidECEF, out_l2w);
+             out_w2l.invert(out_l2w);
+        }
+        else // projected
+        {
+
+            context.getSession()->getMapInfo().getProfile()->getSRS()->transform(
+                centroid,
+                context.getSession()->getMapInfo().getProfile()->getSRS(),
+                centroid);
+
+            out_w2l.makeTranslate(-centroid);
+            out_l2w.invert(out_w2l);
         }
     }
 }

@@ -104,6 +104,10 @@ namespace osgEarth { namespace Features
          */
         Session* getSession() { return _session; }
 
+        FeatureNodeFactory* getFactory() { return _factory; }
+
+        FeatureSourceIndex* getFeatureIndex() { return _featureIndex; }
+ 
         /**
          * UID given to this feature graph when registered with the pseudo-loader
          */
@@ -123,6 +127,7 @@ namespace osgEarth { namespace Features
 	 * Build a predefined set of features
 	 */
 		bool buildWorkingSet(osg::ref_ptr<osg::Group> &group, osg::ref_ptr<FeatureCursor>&WorkingSet, const GeoExtent& extent, FeatureProfile *Profile, const osgDB::Options* readOptions);
+
 
     public: // osg::Node
 

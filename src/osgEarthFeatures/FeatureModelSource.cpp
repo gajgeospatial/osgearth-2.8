@@ -329,3 +329,8 @@ bool GeomFeatureNodeFactory::createOrUpdateNode(
     node = compiler.compile( features, style, context );
     return node.valid();
 }
+
+void GeomFeatureNodeFactory::getOptions(GeometryCompilerOptions& options)
+{
+    options = _options;
+}

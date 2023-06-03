@@ -145,6 +145,7 @@ namespace osgEarth { namespace Features
          * Render (or update) a list of features into a node according to the specified
          * style.
          */
+
         virtual bool createOrUpdateNode(
             FeatureCursor*            cursor,
             const Style&              style,
@@ -171,6 +172,7 @@ namespace osgEarth { namespace Features
         GeomFeatureNodeFactory(
             const GeometryCompilerOptions& options);
 
+        void getOptions(GeometryCompilerOptions& options);
 
         bool createOrUpdateNode(       
             FeatureCursor*            features,

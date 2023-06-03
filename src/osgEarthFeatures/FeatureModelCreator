@@ -1,0 +1,119 @@
+#pragma once
+/* --*-c++-*-- */
+/* osgEarth - Dynamic map generation toolkit for OpenSceneGraph
+ * Copyright 2016 Pelican Mapping
+ * http://osgearth.org
+ *
+ * osgEarth is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+#include <osgEarthFeatures/Common>
+#include <osgEarthFeatures/FeatureModelSource>
+#include <osgEarthFeatures/Session>
+#include <osgEarthSymbology/Style>
+#include <osgEarth/OverlayNode>
+#include <osgEarth/NodeUtils>
+#include <osgEarth/ThreadingUtils>
+#include <osgEarth/DepthOffset>
+#include <osgDB/Callbacks>
+#include <osg/Node>
+#include <set>
+
+namespace osgEarth {
+    class ClampableNode;
+}
+
+namespace osgEarth {
+    namespace Features
+    {
+        using namespace osgEarth;
+        using namespace osgEarth::Symbology;
+
+        /**
+         * A scene graph that renders feature data.
+         * This class will handle all the internals of selecting features, gridding feature
+         * data if required, and sorting features based on style. Then for each cell and each
+         * style, it will invoke the FeatureNodeFactory to create the actual data for each set.
+         */
+        class OSGEARTHFEATURES_EXPORT FeatureModelCreator : public osg::Group
+        {
+        public:
+            /**
+             * Constructs a new model graph.
+             *
+             * @param options
+             *      Model source options
+             * @param factory
+             *      Node factory that will be invoked to compile feature data into nodes
+             * @param session
+             *      Session under which to create elements in this graph
+             * @param preMergeOperations
+             *      Node operations that will execute in the pager thread after it finishes
+             *      building a node
+             * @param postMergeOperations
+             *      Node operations that will execute after merging a node into the graph
+             */
+            FeatureModelCreator(
+                Session* session,
+                FeatureNodeFactory* factory,
+                FeatureSourceIndex* featureIndex);
+
+ 
+            /**
+             * Session associated with this feature graph.
+             */
+            Session* getSession() { return _session; }
+
+            void Init(const GeoExtent& extent, FeatureProfile* Profile, const osgDB::Options* readOptions);
+
+            /**
+             * Build a predefined set of features
+             */
+            bool buildWorkingSet(osg::ref_ptr<osg::Group>& group, Feature * WorkingSet);
+
+        public: // osg::Node
+
+
+            virtual ~FeatureModelCreator();
+
+        private:
+
+
+
+            osg::Group* createStyleGroup(
+                const Style& style,
+                Feature * workingSet,
+                const FilterContext& contextPrototype,
+                const osgDB::Options* readOptions);
+
+        private:
+            osg::ref_ptr<FeatureNodeFactory> _factory;
+            osg::ref_ptr<Session>            _session;
+            osg::ref_ptr<FeatureSourceIndex> _featureIndex;
+            GeoExtent                        _extent;
+            FeatureProfile *                 _Profile;
+            const osgDB::Options *           _ReadOptions;
+            FeatureSource *                  _FeatureSource;
+            Style                            _defaultStyle;
+            osgEarth::ShaderPolicy           _ShadPol;
+            GeometryCompilerOptions          _GeometryOptions;
+            GeometryCompiler *               _compiler;
+            FilterContext *                  _context;
+            bool createOrUpdateNode(Feature * curso , const Style &style, FilterContext &context, const osgDB::Options * readOptions , osg::ref_ptr<osg::Node>& output);
+            osg::Group* getOrCreateStyleGroupFromFactory(const Style& style);
+        };
+
+    }
+} // namespace osgEarth::Features
+

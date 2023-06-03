@@ -88,10 +88,23 @@ namespace osgEarth { namespace Features
          */
         void setStyle( const Style& style );
 
+        void InitForTile(FilterContext& context);
+
         /**
          * Pushes a list of features through the filter.
          */
         osg::Node* push( FeatureList& input, FilterContext& context );
+
+        /**
+        * Process a list of features
+        */
+        bool process(FeatureList& input, FilterContext& context);
+
+        /**
+        * Process a single Feature
+        */
+        osg::Node * ExtrudeGeometryFilter::ExtrudeFeature(Feature * input, FilterContext &context);
+
 
     public: // properties
 
@@ -191,6 +204,9 @@ namespace osgEarth { namespace Features
         bool                           _styleDirty;
         bool                           _gpuClamping;
 
+        Random                         _wallSkinPRNG;
+        Random                         _roofSkinPRNG;
+
         osg::ref_ptr<const ExtrusionSymbol> _extrusionSymbol;
         osg::ref_ptr<const SkinSymbol>      _wallSkinSymbol;
         osg::ref_ptr<const PolygonSymbol>   _wallPolygonSymbol;
@@ -208,11 +224,7 @@ namespace osgEarth { namespace Features
             const std::string&   name,
             Feature*             feature,
             FeatureIndexBuilder* index);
-        
-        bool process( 
-            FeatureList&     input,
-            FilterContext&   context );
-        
+                
         bool buildStructure(const Geometry*         input,
                             double                  height,
                             bool                    flatten,
@@ -244,6 +256,9 @@ namespace osgEarth { namespace Features
                                   osg::Geometry*    outline,
                                   const osg::Vec4&  outlineColor,
                                   float             minCreaseAngleDeg);
+
+        bool ExtrudeAFeature(Feature* input, FilterContext& context);
+
     };
 
 } } // namespace osgEarth::Features

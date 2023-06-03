@@ -21,7 +21,6 @@
 #include <osgEarthFeatures/BuildTextFilter>
 #include <osgEarthFeatures/AltitudeFilter>
 #include <osgEarthFeatures/CentroidFilter>
-#include <osgEarthFeatures/ExtrudeGeometryFilter>
 #include <osgEarthFeatures/ScatterFilter>
 #include <osgEarthFeatures/SubstituteModelFilter>
 #include <osgEarthFeatures/TessellateOperator>
@@ -151,13 +150,15 @@ GeometryCompilerOptions::mergeConfig( const Config& conf )
 
 //-----------------------------------------------------------------------
 
-GeometryCompiler::GeometryCompiler()
+GeometryCompiler::GeometryCompiler() : _point(nullptr), _line(nullptr), _polygon(nullptr), _extrusion(nullptr), _altitude(nullptr),
+                                       _text(nullptr), _marker(nullptr), _icon(nullptr), _model(nullptr)
 {
     //nop
 }
 
 GeometryCompiler::GeometryCompiler( const GeometryCompilerOptions& options ) :
-_options( options )
+                                    _options( options ), _point(nullptr), _line(nullptr), _polygon(nullptr), _extrusion(nullptr), _altitude(nullptr),
+                                    _text(nullptr), _marker(nullptr), _icon(nullptr), _model(nullptr)
 {
     //nop
 }
@@ -214,6 +215,119 @@ GeometryCompiler::compile(FeatureCursor*        cursor,
     cursor->fill( workingSet );
 
     return compile(workingSet, style, context);
+}
+
+void GeometryCompiler::InitForTile(const Style& style, const FilterContext& context)
+{
+    // create a filter context that will track feature data through the process
+    _sharedCX = context;
+
+    if (!_sharedCX.extent().isSet() && _sharedCX.profile())
+    {
+        _sharedCX.extent() = _sharedCX.profile()->getExtent();
+    }
+
+
+    // go through the Style and figure out which filters to use.
+    _point = style.get<PointSymbol>();
+    _line = style.get<LineSymbol>();
+    _polygon = style.get<PolygonSymbol>();
+    _extrusion = style.get<ExtrusionSymbol>();
+    _altitude = style.get<AltitudeSymbol>();
+    _text = style.get<TextSymbol>();
+    _marker = style.get<MarkerSymbol>();    // to be deprecated
+    _icon = style.get<IconSymbol>();
+    _model = style.get<ModelSymbol>();
+
+    _extrude.setStyle(style);
+    _extrude.InitForTile(_sharedCX);
+
+    // apply per-feature naming if requested.
+    if (_options.featureName().isSet())
+        _extrude.setFeatureNameExpr(*_options.featureName());
+
+    if (_options.mergeGeometry().isSet())
+        _extrude.setMergeGeometry(*_options.mergeGeometry());
+
+}
+
+osg::Node * GeometryCompiler::ExtrudeAFeature(Feature * feature)
+{
+    osg::ref_ptr<osg::Group> resultGroup = new osg::Group();
+    osg::Node* node = _extrude.ExtrudeFeature(feature, _sharedCX);
+    if (node)
+    {
+        resultGroup->addChild(node);
+    }
+
+    if (Registry::capabilities().supportsGLSL())
+    {
+        bool doShaders = (_options.shaderPolicy() == SHADERPOLICY_GENERATE) && (_sharedCX.shaderPolicy() == SHADERPOLICY_GENERATE);
+        bool disableShaders = (_options.shaderPolicy() == SHADERPOLICY_DISABLE) || (_sharedCX.shaderPolicy() == SHADERPOLICY_DISABLE);
+        if (doShaders)
+        {
+            // no ss cache because we will optimize later.
+            Registry::shaderGenerator().run(
+                resultGroup.get(),
+                "osgEarth.GeomCompiler");
+        }
+        else if (disableShaders)
+        {
+            resultGroup->getOrCreateStateSet()->setAttributeAndModes(
+                new osg::Program(),
+                osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+
+        }
+    }
+
+    // Optimize stateset sharing.
+    if (_options.optimizeStateSharing() == true)
+    {
+        // Common state set cache?
+        osg::ref_ptr<StateSetCache> sscache;
+        if (_sharedCX.getSession())
+        {
+            // with a shared cache, don't combine statesets. They may be
+            // in the live graph
+            sscache = _sharedCX.getSession()->getStateSetCache();
+            sscache->consolidateStateAttributes(resultGroup.get());
+        }
+        else
+        {
+            // isolated: perform full optimization
+            sscache = new StateSetCache();
+            sscache->optimize(resultGroup.get());
+        }
+
+    }
+
+    if (_options.optimize() == true)
+    {
+        OE_DEBUG << LC << "optimize begin" << std::endl;
+
+        // Run the optimizer on the resulting graph
+        int optimizations =
+            osgUtil::Optimizer::FLATTEN_STATIC_TRANSFORMS |
+            osgUtil::Optimizer::REMOVE_REDUNDANT_NODES |
+            osgUtil::Optimizer::COMBINE_ADJACENT_LODS |
+            osgUtil::Optimizer::SHARE_DUPLICATE_STATE |
+            //osgUtil::Optimizer::MERGE_GEOMETRY |
+            osgUtil::Optimizer::CHECK_GEOMETRY |
+            osgUtil::Optimizer::MERGE_GEODES |
+            osgUtil::Optimizer::STATIC_OBJECT_DETECTION;
+
+        osgUtil::Optimizer opt;
+        opt.optimize(resultGroup.get(), optimizations);
+
+        osgUtil::Optimizer::MergeGeometryVisitor mg;
+        mg.setTargetMaximumNumberOfVertices(65536);
+        resultGroup->accept(mg);
+
+        OE_DEBUG << LC << "optimize complete" << std::endl;
+
+    }
+
+    return resultGroup.release();
 }
 
 osg::Node*

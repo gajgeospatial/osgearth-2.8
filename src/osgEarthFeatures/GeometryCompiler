@@ -25,6 +25,7 @@
 #include <osgEarthFeatures/ResampleFilter>
 #include <osgEarthSymbology/Style>
 #include <osgEarth/GeoMath>
+#include <osgEarthFeatures/ExtrudeGeometryFilter>
 
 namespace osgEarth { namespace Features
 {
@@ -156,6 +157,8 @@ namespace osgEarth { namespace Features
         /** Access the options for editing. */
         GeometryCompilerOptions& options() { return _options; }
 
+        void InitForTile(const Style &style, const FilterContext &context);
+
     public:
 
         /** Compiles a collection of features into an OSG scene graph. */
@@ -191,8 +194,31 @@ namespace osgEarth { namespace Features
             const Style&          style,
             const FilterContext&  context);
 
+        osg::Node* ExtrudeAFeature(Feature * feature);
+
     protected:
         GeometryCompilerOptions _options;
+
+    private:
+        FilterContext _sharedCX;
+        // ref_ptr's to hold defaults in case we need them.
+        osg::ref_ptr<PointSymbol>   _defaultPoint;
+        osg::ref_ptr<LineSymbol>    _defaultLine;
+        osg::ref_ptr<PolygonSymbol> _defaultPolygon;
+
+        // go through the Style and figure out which filters to use.
+        const PointSymbol* _point;
+        const LineSymbol* _line;
+        const PolygonSymbol* _polygon;
+        const ExtrusionSymbol* _extrusion;
+        const AltitudeSymbol* _altitude;
+        const TextSymbol* _text;
+        const MarkerSymbol* _marker;    // to be deprecated
+        const IconSymbol* _icon;
+        const ModelSymbol* _model;
+
+        ExtrudeGeometryFilter _extrude;
+
     };
 
 } } // namespace osgEarth::Features

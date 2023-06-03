@@ -1637,6 +1637,7 @@
     <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureDisplayLayout.cpp" />
     <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureDrawSet.cpp" />
     <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureListSource.cpp" />
+    <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureModelCreator.cpp" />
     <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureModelGraph.cpp" />
     <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureModelSource.cpp" />
     <ClCompile Include="..\..\..\src\osgEarthFeatures\FeatureSource.cpp" />
@@ -1678,6 +1679,7 @@
     <None Include="..\..\..\src\osgEarthFeatures\FeatureDrawSet" />
     <None Include="..\..\..\src\osgEarthFeatures\FeatureIndex" />
     <None Include="..\..\..\src\osgEarthFeatures\FeatureListSource" />
+    <None Include="..\..\..\src\osgEarthFeatures\FeatureModelCreator" />
     <None Include="..\..\..\src\osgEarthFeatures\FeatureModelGraph" />
     <None Include="..\..\..\src\osgEarthFeatures\FeatureModelSource" />
     <None Include="..\..\..\src\osgEarthFeatures\FeatureSource" />
