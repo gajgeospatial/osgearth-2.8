@@ -103,7 +103,9 @@ namespace osgEarth { namespace Features
         /**
         * Process a single Feature
         */
-        osg::Node * ExtrudeGeometryFilter::ExtrudeFeature(Feature * input, FilterContext &context);
+        osg::Node * ExtrudeFeature(Feature * input, FilterContext &context);
+
+        osg::Node * ConstructFeature(Feature* input, FilterContext& context);
 
 
     public: // properties
@@ -157,6 +159,42 @@ namespace osgEarth { namespace Features
         };
         typedef std::vector<Face> Faces;
         
+        struct GeoPoint
+        {
+            osg::Vec3d  pLoc;
+            float       TexU;
+            float       TexV;
+            GeoPoint() : pLoc(0.0,0.0,0.0),TexU(0.0f), TexV(0.0f)
+            {
+            }
+            GeoPoint(osg::Vec3d loc) : pLoc(loc), TexU(0.0f), TexV(0.0f)
+            {
+            }
+        };
+        typedef std::vector<GeoPoint> GeoPoints;
+
+        struct GeoFace
+        {
+            GeoPoints Points;
+
+            unsigned int getNumPoints() const
+            {
+                return Points.size();
+            }
+
+            Bounds getBounds() const
+            {
+                Bounds bounds;
+                for (GeoPoints::const_iterator i = Points.begin(); i != Points.end(); ++i)
+                {
+                    bounds.expandBy(i->pLoc.x(), i->pLoc.y(), i->pLoc.z());
+                }
+                return bounds;
+            }
+        };
+        typedef std::vector<GeoFace> GeoFaces;
+        typedef std::vector<GeoFaces> GeoFacesVec;
+        
         // An Elevation is a series of related Faces.
         struct Elevation
         {
@@ -183,6 +221,22 @@ namespace osgEarth { namespace Features
                     c += e->getNumPoints();
                 }
                 return c;
+            }
+        };
+
+        struct GeoStructure
+        {
+            GeoFaces            Roofs;
+            GeoFaces            Walls;
+            bool                isPolygon;
+            osg::Vec3d          baseCentroid;
+            float               verticalOffset;
+            bool                makeECEF;
+            SpatialReference    *srs;
+            SpatialReference    *mapSRS;
+
+            GeoStructure() : isPolygon(false), baseCentroid(0.0, 0.0, 0.0), verticalOffset(0.0f), makeECEF(false), srs(nullptr), mapSRS(nullptr)
+            {
             }
         };
 
@@ -239,11 +293,32 @@ namespace osgEarth { namespace Features
 							std::string				roof_mat_index_name,
 							ExtrudeGeomGDALHelper * RoofHelper);
 
+        bool LoadStructure(Geometry*         multiinput,
+                           double                  height,
+                           bool                    flatten,
+                           float                   verticalOffset,
+                           const SkinResource*     wallSkin,
+                           const SkinResource*     roofSkin,
+                           GeoStructure&              structure,
+                           FilterContext&          cx,
+                           bool					   have_roof_image,
+                           std::string			   roof_image_name,
+                           bool					   roof_image_has_mat_index,
+                           std::string			   roof_mat_index_name,
+                           ExtrudeGeomGDALHelper* RoofHelper);
+
+
         bool buildWallGeometry(const Structure&     structure,
                                osg::Geometry*       walls,
                                const osg::Vec4&     wallColor,
                                const osg::Vec4&     wallBaseColor,
                                const SkinResource*  wallSkin);
+
+        bool FormWallGeometry(GeoStructure& structure,
+                              osg::Geometry* walls,
+                              const osg::Vec4& wallColor,
+                              const osg::Vec4& wallBaseColor,
+                              const SkinResource* wallSkin);
 
         bool buildRoofGeometry(const Structure&     structure,
                                osg::Geometry*       roof,
@@ -252,12 +327,27 @@ namespace osgEarth { namespace Features
 							   const bool			have_roof_image,
 							   const bool			have_roof_mat_index);
 
+        bool FormRoofGeometry(GeoStructure& structure,
+                              osg::Geometry* roof,
+                              const osg::Vec4& roofColor,
+                              const SkinResource* roofSkin,
+                              const bool have_roof_image,
+                              const bool have_roof_mat_index);
+
         bool buildOutlineGeometry(const Structure&  structure,
                                   osg::Geometry*    outline,
                                   const osg::Vec4&  outlineColor,
                                   float             minCreaseAngleDeg);
 
         bool ExtrudeAFeature(Feature* input, FilterContext& context);
+
+        bool ConstructAFeature(Feature* input, FilterContext& context);
+
+        osg::Vec3d LocalizeFeature(FilterContext& cx, Feature* f);
+
+        bool SetLocalizationForFeature(FilterContext& cx, Feature* f, GeoStructure& structure);
+
+        osg::Vec4d PlanerConstants(osg::Vec3d& P0, osg::Vec3d& P1, osg::Vec3d& P2);
 
     };
 

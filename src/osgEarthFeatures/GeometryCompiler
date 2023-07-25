@@ -196,6 +196,8 @@ namespace osgEarth { namespace Features
 
         osg::Node* ExtrudeAFeature(Feature * feature);
 
+        osg::Node* ConstructAFeature(Feature* feature);
+
     protected:
         GeometryCompilerOptions _options;
 
