@@ -52,7 +52,7 @@
 #define GEOTRSFRM_ROTATION_PARAM2      4
 #define GEOTRSFRM_NS_RES               5
 
-#define VERTICALZMAX 0.001
+#define VERTICALZMAX 0.00005
 using namespace osgEarth;
 using namespace osgEarth::Features;
 using namespace osgEarth::Symbology;
@@ -611,7 +611,9 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
     std::string			    roof_mat_index_name,
     ExtrudeGeomGDALHelper* RoofHelper)
 {
-
+#ifdef _DEBUG
+    int fubar = 0;
+#endif
     // whether this is a closed polygon structure.
     structure.isPolygon = true;
 
@@ -680,8 +682,9 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
                 else if (pcount == 2)
                 {
                     P2 = point;
-                    osg::Vec4d PlnC = PlanerConstants(P0, P1, P2);
-                    if (abs(PlnC.z()) <= VERTICALZMAX)
+                    osg::Vec3d Norm;
+                    osg::Vec4d PlnC = PlanerConstants(P0, P1, P2, Norm);
+                    if (abs(Norm.z()) <= VERTICALZMAX)
                     {
                         isWall = true;
                         isRoof = false;
@@ -691,6 +694,7 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
                         isWall = false;
                         isRoof = true;
                     }
+                    CurFace.PlanerC = PlnC;
                 }
 
                 if (point.z() > targetLen)
@@ -725,6 +729,10 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
             osg::ref_ptr<const SpatialReference> roofProjSRS;
             if(isRoof)
             {
+#ifdef _DEBUG
+                if(structure.Roofs.size() > 0)
+                    ++fubar;
+#endif
                 structure.Roofs.push_back(CurFace);
             }
             else if(isWall)
@@ -820,19 +828,41 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
     return true;
 }
 
-osg::Vec4d ExtrudeGeometryFilter::PlanerConstants(osg::Vec3d& P0, osg::Vec3d& P1, osg::Vec3d& P2)
+osg::Vec4d ExtrudeGeometryFilter::PlanerConstants(osg::Vec3d& P0, osg::Vec3d& P1, osg::Vec3d& P2, osg::Vec3d &Norm)
 {
     osg::Vec4d PlnC;
     double a1 = P1.x() - P0.x();
     double b1 = P1.y() - P0.y();
     double c1 = P1.z() - P0.z();
+
     double a2 = P2.x() - P1.x();
     double b2 = P2.y() - P1.y();
     double c2 = P2.z() - P1.z();
-    PlnC.x() = b1 * c2 - b2 * c1;
-    PlnC.y() = a2 * c1 - a1 * c2;
-    PlnC.z() = a1 * b2 - b1 * a2;
-    PlnC.w() = (-PlnC.x() * P0.x() - PlnC.y() * P0.y() - PlnC.z() * P0.z());
+
+    PlnC.x() = b1 * c2 - b2 * c1; //A
+    PlnC.y() = a2 * c1 - a1 * c2; //B
+    PlnC.z() = a1 * b2 - b1 * a2; //C
+    PlnC.w() = (-PlnC.x() * P0.x() - PlnC.y() * P0.y() - PlnC.z() * P0.z()); //D
+    Norm.x() = PlnC.x();
+    Norm.y() = PlnC.y();
+    Norm.z() = PlnC.z();
+    Norm.normalize();
+#if 0
+
+    int fubar = 0;
+    double d0 = (PlnC.x() * P0.x()) + (PlnC.y() * P0.y()) + (PlnC.z() * P0.z()) + PlnC.w();
+    if(d0 > DBL_EPSILON)
+        ++fubar;
+
+    double d1 = (PlnC.x() * P1.x()) + (PlnC.y() * P1.y()) + (PlnC.z() * P1.z()) + PlnC.w();
+    if (d1 > DBL_EPSILON)
+        ++fubar;
+
+    double d2 = (PlnC.x() * P2.x()) + (PlnC.y() * P2.y()) + (PlnC.z() * P2.z()) + PlnC.w();
+    if (d2 > DBL_EPSILON)
+        ++fubar;
+
+#endif
     return PlnC;
 }
 

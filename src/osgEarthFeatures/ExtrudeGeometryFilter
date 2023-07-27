@@ -175,8 +175,8 @@ namespace osgEarth { namespace Features
 
         struct GeoFace
         {
-            GeoPoints Points;
-
+            GeoPoints   Points;
+            osg::Vec4d  PlanerC;
             unsigned int getNumPoints() const
             {
                 return Points.size();
@@ -347,7 +347,7 @@ namespace osgEarth { namespace Features
 
         bool SetLocalizationForFeature(FilterContext& cx, Feature* f, GeoStructure& structure);
 
-        osg::Vec4d PlanerConstants(osg::Vec3d& P0, osg::Vec3d& P1, osg::Vec3d& P2);
+        osg::Vec4d PlanerConstants(osg::Vec3d& P0, osg::Vec3d& P1, osg::Vec3d& P2, osg::Vec3d &Norm);
 
     };
 
