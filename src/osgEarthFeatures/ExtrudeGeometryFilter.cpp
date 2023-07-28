@@ -620,6 +620,7 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
     // store the vert offset for later encoding
     structure.verticalOffset = verticalOffset;
 
+#if 0
     double texWidthM = wallSkin ? *wallSkin->imageWidth() : 1.0;
     double texHeightM = wallSkin ? *wallSkin->imageHeight() : 1.0;
 
@@ -634,6 +635,7 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
     }
 
     bool     tex_repeats_y = wallSkin && wallSkin->isTiled() == true;
+#endif
 
     double maxWallLen = 0.0;
     double targetLen = -DBL_MAX;
@@ -729,10 +731,6 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
             osg::ref_ptr<const SpatialReference> roofProjSRS;
             if(isRoof)
             {
-#ifdef _DEBUG
-                if(structure.Roofs.size() > 0)
-                    ++fubar;
-#endif
                 structure.Roofs.push_back(CurFace);
             }
             else if(isWall)
@@ -740,7 +738,7 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
                 structure.Walls.push_back(CurFace);
             }
 
-            if (roofSkin && isRoof)
+            if ((roofSkin || have_roof_image) && isRoof)
             {
                 GeoFace& thisRoof = structure.Roofs.back();
                 roofBounds = thisRoof.getBounds();
@@ -752,18 +750,21 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
                 sinR = sin(roofRotation);
                 cosR = cos(roofRotation);
 
-                if (!roofSkin->isTiled().value())
+                if(roofSkin)
                 {
-                    //note: non-tiled roofs don't really work atm.
-                    roofTexSpanX = cosR * roofBounds.width() - sinR * roofBounds.height();
-                    roofTexSpanY = sinR * roofBounds.width() + cosR * roofBounds.height();
-                }
-                else
-                {
-                    roofTexSpanX = roofSkin->imageWidth().isSet() ? *roofSkin->imageWidth() : roofSkin->imageHeight().isSet() ? *roofSkin->imageHeight() : 10.0;
-                    if (roofTexSpanX <= 0.0) roofTexSpanX = 10.0;
-                    roofTexSpanY = roofSkin->imageHeight().isSet() ? *roofSkin->imageHeight() : roofSkin->imageWidth().isSet() ? *roofSkin->imageWidth() : 10.0;
-                    if (roofTexSpanY <= 0.0) roofTexSpanY = 10.0;
+                    if (!roofSkin->isTiled().value())
+                    {
+                        //note: non-tiled roofs don't really work atm.
+                        roofTexSpanX = cosR * roofBounds.width() - sinR * roofBounds.height();
+                        roofTexSpanY = sinR * roofBounds.width() + cosR * roofBounds.height();
+                    }
+                    else
+                    {
+                        roofTexSpanX = roofSkin->imageWidth().isSet() ? *roofSkin->imageWidth() : roofSkin->imageHeight().isSet() ? *roofSkin->imageHeight() : 10.0;
+                        if (roofTexSpanX <= 0.0) roofTexSpanX = 10.0;
+                        roofTexSpanY = roofSkin->imageHeight().isSet() ? *roofSkin->imageHeight() : roofSkin->imageWidth().isSet() ? *roofSkin->imageWidth() : 10.0;
+                        if (roofTexSpanY <= 0.0) roofTexSpanY = 10.0;
+                    }
                 }
                 int pcount = 0;
                 for (Geometry::const_iterator m = input->begin(); m != input->end(); ++m)
@@ -804,8 +805,8 @@ ExtrudeGeometryFilter::LoadStructure(Geometry* multiinput,
             for(GeoPoints::iterator p = g->Points.begin(); p != g->Points.end(); ++p)
             {
                 // prep for wall texture coordinate generation.
-                double texWidthM = wallSkin ? *wallSkin->imageWidth() : 0.0;
-                double texHeightM = wallSkin ? *wallSkin->imageHeight() : 1.0;
+//              double texWidthM = wallSkin ? *wallSkin->imageWidth() : 0.0;
+//              double texHeightM = wallSkin ? *wallSkin->imageHeight() : 1.0;
 
 //              double maxHeight = targetLen - minLoc.z();
 
@@ -1105,10 +1106,6 @@ ExtrudeGeometryFilter::FormWallGeometry(GeoStructure& structure,
         }
     }
 
-    bool flatten =
-        _style.has<ExtrusionSymbol>() &&
-        _style.get<ExtrusionSymbol>()->flatten() == true;
-
     //Remove redundant points;
     for (GeoFaces::iterator g = structure.Walls.begin(); g != structure.Walls.end(); ++g)
     {
@@ -1192,24 +1189,11 @@ ExtrudeGeometryFilter::FormWallGeometry(GeoStructure& structure,
     }
 
     walls->getOrCreateStateSet()->setAttributeAndModes(new osg::FrontFace(osg::FrontFace::COUNTER_CLOCKWISE), osg::StateAttribute::ON);
-    //	walls->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON);
 
     osgUtil::SmoothingVisitor::smooth(
         *walls,
         osg::DegreesToRadians(_wallAngleThresh_deg));
 
-    osg::Array* normal = walls->getNormalArray();
-    int n0 = normal->getNumElements();
-
-    osg::Array* varray = walls->getVertexArray();
-
-#if 0
-    osg::Vec3Array* normal = new osg::Vec3Array(verts->size());
-    walls->setNormalArray(normal);
-    walls->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    normal->assign(verts->size(), osg::Vec3(0, 0, 1));
-#endif
-    int v0 = varray->getNumElements();
 
     // Tessellate the roof lines into polygons.
     if(need2tesselate)
@@ -1219,10 +1203,6 @@ ExtrudeGeometryFilter::FormWallGeometry(GeoStructure& structure,
         tess.setWindingType(osgUtil::Tessellator::TESS_WINDING_ODD);
         tess.retessellatePolygons(*walls);
     }
-    normal = walls->getNormalArray();
-    int n1 = normal->getNumElements();
-    varray = walls->getVertexArray();
-    int v1 = varray->getNumElements();
 
     return true;
 }
@@ -1425,12 +1405,11 @@ ExtrudeGeometryFilter::FormRoofGeometry(GeoStructure& structure,
         roof->addPrimitiveSet(new osg::DrawArrays(GL_LINE_LOOP, elevptr, vertptr - elevptr));
     }
 
-    osg::Vec3Array* normal = new osg::Vec3Array(verts->size());
-    roof->setNormalArray(normal);
-    roof->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    normal->assign(verts->size(), osg::Vec3(0, 0, 1));
 
-    int v = verts->size();
+    osgUtil::SmoothingVisitor::smooth(
+        *roof,
+        osg::DegreesToRadians(_wallAngleThresh_deg));
+
 
     // Tessellate the roof lines into polygons.
 
