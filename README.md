@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/gwaldron/osgearth.svg?branch=master)](https://travis-ci.org/gwaldron/osgearth)
-[![Coverity Status](https://scan.coverity.com/projects/9251/badge.svg)](https://scan.coverity.com/projects/gwaldron-osgearth)
 
 osgEarth - Dynamic map generation toolkit for OpenSceneGraph
 Copyright 2015 Pelican Mapping
@@ -21,3 +19,12 @@ IN THE SOFTWARE.
 
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+GAJ-Geospatial
+This repository contains updates that allow the viewing of OGC CDB with osgEarth.
+The project CDB_TileLib provides the core API for reading CDB data. This library is exercised
+by the plugins osgearth_cdb which handles the reading of all CDB Raster data (Imagery, 
+Elevation / Bathometry, as well as the raster material layers of CDB. The
+plugin osgearth_feature_cdb provides access of both CDB GeoTypical and GeoSpecific 
+model layers. The plugin osgearth_feature_cdbv adds roads, railroads, hydrography
+and powerlines as vector overlays from the CDB.
