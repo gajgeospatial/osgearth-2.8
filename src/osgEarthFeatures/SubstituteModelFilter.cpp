@@ -237,7 +237,7 @@ SubstituteModelFilter::process(const FeatureList&           features,
 	CDB_Tile_Type tt = CDB_Unknown;
 
 #endif
-
+    std::string LastArchiveName = "";
     for( FeatureList::const_iterator f = features.begin(); f != features.end(); ++f )
     {
         Feature* input = f->get();
@@ -248,14 +248,28 @@ SubstituteModelFilter::process(const FeatureList&           features,
             StringExpression scriptExpr(symbol->script().get());
             input->eval( scriptExpr, &context );
         }
-		if ((ar == NULL) && input->hasAttr("osge_modelzip"))  
-		{
-			//all model requests should come from the same archive
-			//the existance and validity of the archive has already been tested by the driver
-			archiveName = input->getString("osge_modelzip");
-			ar = osgDB::openArchive(archiveName, osgDB::ReaderWriter::ArchiveStatus::READ);
+        bool has_Archive = input->hasAttr("osge_modelzip");
+        if(has_Archive)
+        {
+            archiveName = input->getString("osge_modelzip");
+            if (archiveName != LastArchiveName)
+            {
+                if (ar)
+                {
+                    ar.release();
+                    ar = NULL;
+                }
+            }
 
-		}
+		    if ((ar == NULL) && has_Archive)  
+		    {
+			    //all model requests should come from the same archive
+			    //the existance and validity of the archive has already been tested by the driver
+			    
+			    ar = osgDB::openArchive(archiveName, osgDB::ReaderWriter::ArchiveStatus::READ);
+                LastArchiveName = archiveName;
+		    }
+        }
 #ifdef _DO_GPKG_TESTS
 		if (!trackingSet)
 		{

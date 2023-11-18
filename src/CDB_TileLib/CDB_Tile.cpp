@@ -154,13 +154,19 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 	else if (m_TileType == GeoSpecificModel)
 	{
 		m_LayerName = "100_GSFeature";	
-		filetype = ".shp";
+		if(gbls->Get_Use_GeoPackage_Features())
+			filetype = ".gpkg";
+		else
+			filetype = ".shp";
 		datasetstr = "_D100" + m_DataSet;
 	}
 	else if (m_TileType == GeoTypicalModel)
 	{
 		m_LayerName = "101_GTFeature";	
-		filetype = ".shp";
+		if (gbls->Get_Use_GeoPackage_Features())
+			filetype = ".gpkg";
+		else
+			filetype = ".shp";
 		datasetstr = "_D101" + m_DataSet;
 	}
 	else
@@ -478,7 +484,10 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 		if (!m_DataFromGlobal)
 		{
 			m_FileExists = validate_tile_name(m_FileName);
-			m_ModelSet[0].ModelDbfNameExists = validate_tile_name(m_ModelSet[0].ModelDbfName);
+			if(!gbls->Get_Use_GeoPackage_Features())
+			{
+				m_ModelSet[0].ModelDbfNameExists = validate_tile_name(m_ModelSet[0].ModelDbfName);
+			}
 			m_ModelSet[0].ModelGeometryNameExists = validate_tile_name(m_ModelSet[0].ModelGeometryName);
 			m_ModelSet[0].ModelTextureNameExists = validate_tile_name(m_ModelSet[0].ModelTextureName);
 		}
@@ -606,6 +615,8 @@ bool CDB_Tile::DataFromGlobal(void)
 
 bool CDB_Tile::Build_GS_Stack(void)
 {
+	CDB_Global * gbls = CDB_Global::getInstance();
+
 	for (int nlod = 1; nlod <= 10; ++nlod)
 	{
 		int cdbLod = nlod * -1;
@@ -618,7 +629,11 @@ bool CDB_Tile::Build_GS_Stack(void)
 		std::string filetype2str = ".dbf";
 		std::stringstream dbfbuf;
 		std::stringstream buf;
-		std::string filetype = ".shp";
+		std::string filetype;
+		if(gbls->Get_Use_GeoPackage_Features())
+			filetype = ".gpkg";
+		else
+			filetype = ".shp";
 		std::string datasetstr = "_D100" + m_DataSet;
 		CDB_Model_Tile_Set ModelSet;
 
@@ -695,7 +710,7 @@ bool CDB_Tile::Build_GS_Stack(void)
 		ModelSet.ModelDbfNameExists = validate_tile_name(ModelSet.ModelDbfName);
 		ModelSet.ModelGeometryNameExists = validate_tile_name(ModelSet.ModelGeometryName);
 		ModelSet.ModelTextureNameExists = validate_tile_name(ModelSet.ModelTextureName);
-		if (ModelSet.ModelWorkingNameExists && ModelSet.ModelDbfNameExists)
+		if (ModelSet.ModelWorkingNameExists && (ModelSet.ModelDbfNameExists || gbls->Get_Use_GeoPackage_Features()))
 		{
 			m_ModelSet.insert(m_ModelSet.begin(), ModelSet);
 		}
@@ -707,8 +722,12 @@ bool CDB_Tile::Build_GS_Stack(void)
 
 bool CDB_Tile::Build_GT_Stack(void)
 {
-
-	std::string filetype = ".shp";
+	CDB_Global* gbls = CDB_Global::getInstance();
+	std::string filetype;
+	if(gbls->Get_Use_GeoPackage_Features())
+		filetype = ".gpkg";
+	else
+		filetype = ".shp";
 	std::string datasetstr = "_D101" + m_DataSet;
 
 	for (int nlod = 1; nlod <= 10; ++nlod)
@@ -777,7 +796,7 @@ bool CDB_Tile::Build_GT_Stack(void)
 			t.PrimaryExists = validate_tile_name(t.TilePrimaryShapeName);
 			t.ClassExists = validate_tile_name(t.TileSecondaryShapeName);
 			t.RealSel = i - 1;
-			if (t.PrimaryExists && t.ClassExists)
+			if (t.PrimaryExists && (t.ClassExists || gbls->Get_Use_GeoPackage_Features()))
 			{
 				m_GTModelSet.insert(m_GTModelSet.begin(), t);
 				have_this_lod = true;
@@ -1227,7 +1246,13 @@ bool CDB_Tile::Open_Tile(void)
 		if(m_DataFromGlobal)
 			m_GDAL.poDriver = m_GlobalDataset->GetDriver();
 		else
-			m_GDAL.poDriver = Gbl_TileDrivers.cdb_ShapefileDriver;
+		{
+			CDB_Global* gbls = CDB_Global::getInstance();
+			if (gbls->Get_Use_GeoPackage_Features())
+				m_GDAL.poDriver = Gbl_TileDrivers.cdb_GeoPackageDriver;
+			else
+				m_GDAL.poDriver = Gbl_TileDrivers.cdb_ShapefileDriver;
+		}
 		return Open_GT_Model_Tile();
 	}
 	else if (m_TileType == GeoSpecificModel)
@@ -1235,7 +1260,13 @@ bool CDB_Tile::Open_Tile(void)
 		if (m_DataFromGlobal)
 			m_GDAL.poDriver = m_GlobalDataset->GetDriver();
 		else
-			m_GDAL.poDriver = Gbl_TileDrivers.cdb_ShapefileDriver;
+		{
+			CDB_Global * gbls = CDB_Global::getInstance();
+			if(gbls->Get_Use_GeoPackage_Features())
+				m_GDAL.poDriver = Gbl_TileDrivers.cdb_GeoPackageDriver;
+			else
+				m_GDAL.poDriver = Gbl_TileDrivers.cdb_ShapefileDriver;
+		}
 		return Open_GS_Model_Tile();
 	}
 	else if (m_TileType == GeoPackageMap)
@@ -1314,49 +1345,72 @@ bool CDB_Tile::Open_GS_Model_Tile(void)
 		bool valid_set = true;
 		if(!m_DataFromGlobal)
 		{
-			if (m_ModelSet[i].ModelWorkingNameExists && m_ModelSet[i].ModelDbfNameExists && m_ModelSet[i].ModelGeometryNameExists)
+			CDB_Global * gbls = CDB_Global::getInstance();
+			if(gbls->Get_Use_GeoPackage_Features())
 			{
-				GDALOpenInfo oOpenInfoP(m_ModelSet[i].ModelWorkingName.c_str(), GA_ReadOnly);
-				m_ModelSet[i].PrimaryTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoP);
-				if (!m_ModelSet[i].PrimaryTileOgr)
+				if(m_ModelSet[i].ModelWorkingNameExists)
 				{
-					valid_set = false;
-					continue;
-				}
-
-				GDALOpenInfo oOpenInfoC(m_ModelSet[i].ModelDbfName.c_str(), GA_ReadOnly);
-				m_ModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
-				if (!m_ModelSet[i].ClassTileOgr)
-				{
-					//Check for junk files clogging up the works
-					std::string shx = Set_FileType(m_ModelSet[i].ModelDbfName, ".shx");
-					if (validate_tile_name(shx))
-					{
-						if (::DeleteFile(shx.c_str()) == 0)
-						{
-							return false;
-						}
-					}
-					std::string shp = Set_FileType(m_ModelSet[i].ModelDbfName, ".shp");
-					if (validate_tile_name(shp))
-					{
-						if (::DeleteFile(shp.c_str()) == 0)
-						{
-							return false;
-						}
-					}
-					m_ModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
-					if (!m_ModelSet[i].ClassTileOgr)
+					char* drivers[2];
+					drivers[0] = "GPKG";
+					drivers[1] = NULL;
+					m_ModelSet[i].PrimaryTileOgr = (GDALDataset*)GDALOpenEx(m_ModelSet[i].ModelWorkingName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly | GDAL_OF_SHARED, drivers, NULL, NULL);
+					if (!m_ModelSet[i].PrimaryTileOgr)
 					{
 						valid_set = false;
-						if (m_ModelSet[i].PrimaryTileOgr)
-						{
-							GDALClose(m_ModelSet[i].PrimaryTileOgr);
-							m_ModelSet[i].PrimaryTileOgr = NULL;
-						}
 						continue;
 					}
 				}
+				else
+					valid_set = false;
+			}
+			else
+			{
+				if (m_ModelSet[i].ModelWorkingNameExists && m_ModelSet[i].ModelDbfNameExists && m_ModelSet[i].ModelGeometryNameExists)
+				{
+					GDALOpenInfo oOpenInfoP(m_ModelSet[i].ModelWorkingName.c_str(), GA_ReadOnly);
+					m_ModelSet[i].PrimaryTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoP);
+					if (!m_ModelSet[i].PrimaryTileOgr)
+					{
+						valid_set = false;
+						continue;
+					}
+
+					GDALOpenInfo oOpenInfoC(m_ModelSet[i].ModelDbfName.c_str(), GA_ReadOnly);
+					m_ModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
+					if (!m_ModelSet[i].ClassTileOgr)
+					{
+						//Check for junk files clogging up the works
+						std::string shx = Set_FileType(m_ModelSet[i].ModelDbfName, ".shx");
+						if (validate_tile_name(shx))
+						{
+							if (::DeleteFile(shx.c_str()) == 0)
+							{
+								return false;
+							}
+						}
+						std::string shp = Set_FileType(m_ModelSet[i].ModelDbfName, ".shp");
+						if (validate_tile_name(shp))
+						{
+							if (::DeleteFile(shp.c_str()) == 0)
+							{
+								return false;
+							}
+						}
+						m_ModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
+						if (!m_ModelSet[i].ClassTileOgr)
+						{
+							valid_set = false;
+							if (m_ModelSet[i].PrimaryTileOgr)
+							{
+								GDALClose(m_ModelSet[i].PrimaryTileOgr);
+								m_ModelSet[i].PrimaryTileOgr = NULL;
+							}
+							continue;
+						}
+					}
+				}
+				else
+					valid_set = false;
 			}
 			if (valid_set)
 				Have_a_Valid_set = true;
@@ -1603,11 +1657,17 @@ OGRFeature * CDB_Tile::Next_Valid_Geospecific_Feature(bool inflated, std::string
 	bool done = false;
 	OGRFeature *f = NULL;
 	CDB_Model_RuntimeMapP clsmap;
+	CDB_Global * gbls = CDB_Global::getInstance();
+
 	if (m_DataFromGlobal)
 		clsmap = NULL; // m_GlobalTile->GetGSClassMap(m_CDB_LOD_Num);
 	else
-		clsmap = &m_ModelSet[pos].clsMap;
-
+	{
+		if(gbls->Get_Use_GeoPackage_Features())
+			clsmap = NULL;
+		else
+			clsmap = &m_ModelSet[pos].clsMap;
+	}
 	while (!valid && !done)
 	{
 		f = m_ModelSet[pos].FeatureSet.GetNextFeature();
@@ -1626,7 +1686,7 @@ OGRFeature * CDB_Tile::Next_Valid_Geospecific_Feature(bool inflated, std::string
 		}
 #endif
 		std::string cnam = f->GetFieldAsString("CNAM");
-		if (!cnam.empty())
+		if (!cnam.empty() || gbls->Get_Use_GeoPackage_Features())
 		{
 			if (clsmap)
 			{
@@ -1641,7 +1701,7 @@ OGRFeature * CDB_Tile::Next_Valid_Geospecific_Feature(bool inflated, std::string
 			else
 			{
 				std::string myCNAM = m_CurFeatureClass.inst_set_class(m_ModelSet[pos].PrimaryLayer, f);
-				if (myCNAM.empty())
+				if (myCNAM.empty() && !gbls->Get_Use_GeoPackage_Features())
 					valid = false;
 			}
 			if(valid)
@@ -1664,7 +1724,9 @@ OGRFeature * CDB_Tile::Next_Valid_Geospecific_Feature(bool inflated, std::string
 			}
 		}
 		else
+		{
 			valid = false;
+		}
 		if (!valid)
 		{
 			m_ModelSet[pos].FeatureSet.DestroyCurFeature();
@@ -1769,10 +1831,14 @@ bool CDB_Tile::Init_GS_Model_Tile(unsigned int pos)
 #ifdef _DEBUG
 	int fubar = 0;
 #endif
+	CDB_Global* gbls = CDB_Global::getInstance();
 	if (!m_DataFromGlobal)
 	{
-		if (!m_ModelSet[pos].ClassTileOgr)
-			return false;
+		if(!gbls->Get_Use_GeoPackage_Features())
+		{
+			if (!m_ModelSet[pos].ClassTileOgr)
+				return false;
+		}
 		m_ModelSet[pos].PrimaryLayer = m_ModelSet[pos].PrimaryTileOgr->GetLayer(0);
 		if (!m_ModelSet[pos].PrimaryLayer)
 			return false;
@@ -1824,7 +1890,7 @@ bool CDB_Tile::Init_GS_Model_Tile(unsigned int pos)
 
 
 	OGRLayer *poLayer = NULL;
-	if (!m_DataFromGlobal)
+	if (!m_DataFromGlobal && !gbls->Get_Use_GeoPackage_Features())
 		poLayer = m_ModelSet[pos].ClassTileOgr->GetLayer(0);
 //	else
 //		poLayer = m_GlobalDataset->GetLayerByName(m_ModelSet[pos].ModelDbfName.c_str());
@@ -1842,7 +1908,10 @@ bool CDB_Tile::Init_GS_Model_Tile(unsigned int pos)
 	}
 	else
 	{
-		have_class = Load_Class_Map(poLayer, m_ModelSet[pos].clsMap);
+		if(gbls->Get_Use_GeoPackage_Features())
+			have_class = true;
+		else
+			have_class = Load_Class_Map(poLayer, m_ModelSet[pos].clsMap);
 	}
 	bool have_archive = Load_Archive(m_ModelSet[pos].ModelGeometryName, m_ModelSet[pos].archiveFileList);
 	return (have_class && have_archive);
@@ -2635,6 +2704,15 @@ void CDB_Tile::Set_Verbose(bool value)
 		gbls->Set_CDB_Tile_Be_Verbose(true);
 	else
 		gbls->Set_CDB_Tile_Be_Verbose(false);
+}
+
+void CDB_Tile::Set_Use_Gpkg_For_Features(bool value)
+{
+	CDB_Global* gbls = CDB_Global::getInstance();
+	if(value)
+		gbls->Set_Use_GeoPackage_Features(true);
+	else
+		gbls->Set_Use_GeoPackage_Features(false);
 }
 
 bool CDB_Tile::Initialize_Tile_Drivers(std::string &ErrorMsg)

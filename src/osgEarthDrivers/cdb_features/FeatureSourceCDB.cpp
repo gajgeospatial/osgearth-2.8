@@ -122,6 +122,7 @@ public:
 	  _CDBLodNum(0),
 	  _BE_Verbose(false),
 	  _M_Contains_ABS_Z(false),
+	  _Use_GPKG_For_Features(false),
 	  _UsingFileInput(false),
 	  _GTGeomemtryTableName(""),
 	  _GTTextureTableName(""),
@@ -213,14 +214,20 @@ public:
 			if (z_in_m)
 				_M_Contains_ABS_Z = true;
 		}
+		if(_options.USE_GPKG_Features().isSet())
+		{
+			bool usgpkg = _options.USE_GPKG_Features().value();
+			if(usgpkg)
+				_Use_GPKG_For_Features = true;
+		}
 		// Make sure the root directory is set
 		bool CDB_Limits = true;
+		CDB_Global* gbls = CDB_Global::getInstance();
 
 		if (_options.fileName().isSet())
 		{
 			_FileName = _options.fileName().value();
 			_UsingFileInput = true;
-			CDB_Global * gbls = CDB_Global::getInstance();
 			bool isWFS = (_FileName.find(".xml") != std::string::npos);
 			std::string tileFileName = "";
 			__int64 tileKey = 0;
@@ -427,6 +434,11 @@ public:
 			CDB_Tile::Set_Verbose(true);
 		}
 
+		if(_Use_GPKG_For_Features)
+		{
+			CDB_Tile::Set_Use_Gpkg_For_Features(true);
+		}
+
 		if (Feature_Profile)
 		{
 			setFeatureProfile(Feature_Profile);
@@ -444,7 +456,9 @@ public:
 
     FeatureCursor* createFeatureCursor( const Symbology::Query& query )
     {
-		
+#ifdef _DEBUG
+		int fubar = 0;
+#endif
         FeatureCursor* result = 0L;
 		_cur_Feature_Cnt = 0;
 		// Make sure the root directory is set
@@ -502,7 +516,7 @@ public:
 		_CDBLodNum = mainTile->CDB_LOD_Num();
 		if (_BE_Verbose)
 		{
-			OSG_WARN << "CDB Feature Cursor called with CDB LOD " << _CDBLodNum << " Tile" << std::endl;
+			OSG_WARN << "CDB Feature Cursor called with CDB LOD " << _CDBLodNum << " Tile" << mainTile->FileName(0) << std::endl;
 		}
 		if (_UsingFileInput)
 			mainTile->Set_SpatialFilter_Extent(tileExtent);
@@ -541,7 +555,7 @@ public:
 				{
 					if (_CDB_geoTypical)
 					{
-						OSG_WARN << "Feature tile loding GeoTypical Tile " << base << std::endl;
+						OSG_WARN << "Feature tile loding GeoTypical Tile " << mainTile->FileName(FilesChecked) << std::endl;
 						if (subtile)
 						{
 							OSG_WARN << "Subtile: North " << tileExtent.North << " South " << tileExtent.South << " East " <<
@@ -555,7 +569,7 @@ public:
 					}
 					else
 					{
-						OSG_WARN << "Feature tile loding GeoSpecific Tile " << base << std::endl;
+						OSG_WARN << "Feature tile loding GeoSpecific Tile " << mainTile->FileName(FilesChecked) << std::endl;
 						if (subtile)
 						{
 							OSG_WARN << "Subtile: North " << tileExtent.North << " South " << tileExtent.South << " East " <<
@@ -573,10 +587,18 @@ public:
 				{
 					if (_BE_Verbose)
 					{
-						OSG_WARN << "File " << base << " has " << features.size() << " Features" << std::endl;
+						OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << features.size() << " Features" << std::endl;
 					}
-					OE_INFO << LC << "Features " << features.size() << base << std::endl;
+					else
+						OE_INFO << LC << "Features " << features.size() << base << std::endl;
 					have_a_file = true;
+				}
+				else
+				{
+					if (_BE_Verbose)
+					{
+						OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has no features"  << std::endl;
+					}
 				}
 
 				if (fileOk)
@@ -645,6 +667,7 @@ private:
 		// find the right driver for the given mime type
 		OGR_SCOPED_LOCK;
 		// find the right driver for the given mime type
+		bool fudgeelevation = _Use_GPKG_For_Features;
 		bool have_archive = false;
 		bool have_texture_zipfile = false;
 #ifdef _DEBUG
@@ -657,7 +680,10 @@ private:
 			TileNameStr = osgDB::getNameLessExtension(TileNameStr);
 		}
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL (2,7,0)
+#else
 		const SpatialReference* srs = SpatialReference::create("EPSG:4326");
+#endif
 
 		osg::ref_ptr<osgDB::Options> localoptions = _dbOptions->cloneOptions();
 		std::string ModelTextureDir = "";
@@ -728,7 +754,10 @@ private:
 						OGRPoint * poPoint = (OGRPoint *)geo;
 						double Mpos = poPoint->getM();
 						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
-						poPoint->setZ(Mpos + ZoffsetPos);
+						if(fudgeelevation)
+							poPoint->setZ(3.0);
+						else
+							poPoint->setZ(Mpos + ZoffsetPos);
 
 					}
 				}
@@ -743,13 +772,7 @@ private:
 			++_s_CDB_FeatureID;
 
 			f->set("osge_basename", ModelKeyName);
-#ifdef _DEBUG
-			int dbgpos = ModelKeyName.find("Ambulance");
-			if (dbgpos != std::string::npos)
-			{
-				++fubar;
-			}
-#endif
+
 			if (_CDB_Edit_Support)
 			{
 				std::stringstream format_stream;
@@ -1175,6 +1198,7 @@ private:
 	bool							_GT_LOD0_FullStack;
 	bool							_BE_Verbose;
 	bool							_M_Contains_ABS_Z;
+	bool							_Use_GPKG_For_Features;
 	bool							_UsingFileInput;
     osg::ref_ptr<CacheBin>          _cacheBin;
     osg::ref_ptr<osgDB::Options>    _dbOptions;
