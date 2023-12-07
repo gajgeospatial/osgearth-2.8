@@ -810,7 +810,7 @@ bool CDB_Tile::Build_GT_Stack(void)
 
 std::string CDB_Tile::FileName(int sel)
 {
-	if (sel < 0)
+	if ((sel < 0) || (!m_FileExists))
 		return m_FileName;
 	else if (m_TileType == GeoTypicalModel)
 	{
