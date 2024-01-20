@@ -1741,11 +1741,16 @@ OGRFeature * CDB_Tile::Next_Valid_GeoTypical_Feature(int sel, std::string &Model
 	bool done = false;
 	OGRFeature *f = NULL;
 	CDB_Model_RuntimeMapP clsmap;
+	CDB_Global* gbls = CDB_Global::getInstance();
 	if (m_DataFromGlobal)
 		clsmap = NULL; //m_GlobalTile->GetGTClassMap(m_CDB_LOD_Num, sel);
 	else
-		clsmap = &m_GTModelSet[sel].clsMap;
-
+	{
+		if(gbls->Get_Use_GeoPackage_Features())
+			clsmap = NULL;
+		else
+			clsmap = &m_GTModelSet[sel].clsMap;
+	}
 
 	while (!valid && !done)
 	{
@@ -1765,7 +1770,7 @@ OGRFeature * CDB_Tile::Next_Valid_GeoTypical_Feature(int sel, std::string &Model
 		}
 #endif
 		std::string cnam = f->GetFieldAsString("CNAM");
-		if (!cnam.empty())
+		if (!cnam.empty() || gbls->Get_Use_GeoPackage_Features())
 		{
 			if (clsmap)
 			{
@@ -1780,7 +1785,7 @@ OGRFeature * CDB_Tile::Next_Valid_GeoTypical_Feature(int sel, std::string &Model
 			else
 			{
 				std::string myCNAM = m_CurFeatureClass.inst_set_class(m_GTModelSet[sel].PrimaryLayer, f);
-				if (myCNAM.empty())
+				if (myCNAM.empty() && !gbls->Get_Use_GeoPackage_Features())
 					valid = false;
 			}
 			if(valid)
