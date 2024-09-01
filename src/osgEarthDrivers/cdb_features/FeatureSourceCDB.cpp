@@ -127,7 +127,8 @@ public:
 	  _GTGeomemtryTableName(""),
 	  _GTTextureTableName(""),
 	  _HaveEditLimits(false),
-	  _Materials(false)
+	  _Materials(false),
+	  _SubsitutionCount(0)
 #ifdef _SAVE_OGR_OUTPUT
 	,_OGR_Output(NULL),
 	_OGR_OutputName("C:\\Temp\\GeoSpecificModelCapture.gpkg"),
@@ -587,7 +588,7 @@ public:
 				{
 					if (_BE_Verbose)
 					{
-						OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << features.size() << " Features" << std::endl;
+						OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << features.size() << " Features " << _SubsitutionCount << " are Substitutions" << std::endl;
 					}
 					else
 						OE_INFO << LC << "Features " << features.size() << base << std::endl;
@@ -666,6 +667,7 @@ private:
 	{
 		// find the right driver for the given mime type
 		OGR_SCOPED_LOCK;
+		_SubsitutionCount = 0;
 		// find the right driver for the given mime type
 		bool fudgeelevation = _Use_GPKG_For_Features;
 		bool have_archive = false;
@@ -841,7 +843,10 @@ private:
 					if (find_PreInstance(ModelKeyName, referencedName, instanced, LOD))
 					{
 						if(LOD < _CDBLodNum)
+						{
 							f->set("osge_referencedName", referencedName);
+							++_SubsitutionCount;
+						}
 					}
 				}
 				else
@@ -1200,6 +1205,7 @@ private:
 	bool							_M_Contains_ABS_Z;
 	bool							_Use_GPKG_For_Features;
 	bool							_UsingFileInput;
+	bool							_SubsitutionCount;
     osg::ref_ptr<CacheBin>          _cacheBin;
     osg::ref_ptr<osgDB::Options>    _dbOptions;
 	int								_CDBLodNum;
