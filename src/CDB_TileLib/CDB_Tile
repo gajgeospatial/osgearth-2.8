@@ -208,30 +208,50 @@ struct CDB_Model_Tile_Set
 	std::string			ModelDbfName;
 	std::string			PrimaryLayerName;
 	std::string			ClassLayerName;
-	GDALDataset* PrimaryTileOgr;
-	GDALDataset* ClassTileOgr;
-	OGRLayer* PrimaryLayer;
+	std::string			APLightsName;
+	std::string			APLightsDbfName;
+	std::string			EnvLightsName;
+	std::string			EnvLightsDbfName;
+	GDALDataset*		PrimaryTileOgr;
+	GDALDataset*		ClassTileOgr;
+	GDALDataset*		APLightsPrimaryOgr;
+	GDALDataset*		APLightsClassOgr;
+	GDALDataset*		EnvLightsPrimaryOgr;
+	GDALDataset*		EnvLightsClassOgr;
+	OGRLayer*			PrimaryLayer;
+
 	std::string			LodStr;
 	bool				ModelWorkingNameExists;
 	bool				ModelGeometryNameExists;
 	bool				ModelTextureNameExists;
 	bool				ModelDbfNameExists;
-	CDB_Model_RuntimeMap clsMap;
+	bool				APLightsExists;
+	bool				EnvLightsExists;
+	CDB_Model_RuntimeMap	 clsMap;
+	CDB_APLights_RuntimeMap  APLightsMap;
+	CDB_EnvLights_RuntimeMap EnvLightMap;
 	osgDB::Archive::FileNameList archiveFileList;
 	CDB_ModelFeature_Set FeatureSet;
 #ifdef _DEBUG
 	CDB_ModelFeature_Set DebugFeatureSet;
 #endif
 
-	CDB_Model_Tile_Set() : ModelWorkingName(""), ModelGeometryName(""), ModelTextureName(""), ModelDbfName(""), LodStr(""), ModelWorkingNameExists(false),
-		ModelGeometryNameExists(false), ModelTextureNameExists(false), ModelDbfNameExists(false), PrimaryTileOgr(NULL), ClassTileOgr(NULL), PrimaryLayer(NULL)
+	CDB_Model_Tile_Set() : ModelWorkingName(""), ModelGeometryName(""), ModelTextureName(""), ModelDbfName(""), PrimaryLayerName(""), ClassLayerName(""),
+						   APLightsName(""), APLightsDbfName(""), EnvLightsName(""), EnvLightsDbfName(""), PrimaryTileOgr(nullptr), ClassTileOgr(nullptr),
+						   APLightsPrimaryOgr(nullptr), APLightsClassOgr(nullptr), EnvLightsPrimaryOgr(nullptr), EnvLightsClassOgr(nullptr), PrimaryLayer(nullptr),
+						   LodStr(""), ModelWorkingNameExists(false), ModelGeometryNameExists(false), ModelTextureNameExists(false), ModelDbfNameExists(false),
+						   APLightsExists(false), EnvLightsExists(false)
 	{
 		clsMap.clear();
+		APLightsMap.clear();
+		EnvLightMap.clear();
 	}
 
 	void Clear_Class_Map()
 	{
 		clsMap.clear();
+		APLightsMap.clear();
+		EnvLightMap.clear();
 	}
 
 };

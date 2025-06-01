@@ -370,6 +370,88 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 		clslaybuf << "100_GTFeature_S" << std::setfill('0') << std::setw(3) << abs(i) << "_T"
 			<< std::setfill('0') << std::setw(3) << abs(Tnum + 1) << "_Cls";
 		ModelSet.ClassLayerName = clslaybuf.str();
+
+		dataset2str = "_D100_S004_T001_";
+		filetype2str = ".dbf";
+		std::stringstream aflbuf;
+		if (!m_DataFromGlobal)
+		{
+			aflbuf << cdbRootDir
+				<< "\\Tiles"
+				<< "\\" << m_lat_str
+				<< "\\" << m_lon_str
+				<< "\\" << m_LayerName
+				<< "\\" << m_lod_str
+				<< "\\" << m_uref_str
+				<< "\\" << m_lat_str << m_lon_str << dataset2str << m_lod_str
+				<< "_" << m_uref_str << "_" << m_rref_str << filetype;
+		}
+		else
+		{
+			aflbuf << m_LayerName << dataset2str.substr(5) << "Pnt_" << m_lod_str;
+		}
+		ModelSet.APLightsName = dbfbuf.str();
+
+		dataset2str = "_D100_S004_T002_";
+		std::stringstream aflcbuf;
+		if (!m_DataFromGlobal)
+		{
+			aflcbuf << cdbRootDir
+				<< "\\Tiles"
+				<< "\\" << m_lat_str
+				<< "\\" << m_lon_str
+				<< "\\" << m_LayerName
+				<< "\\" << m_lod_str
+				<< "\\" << m_uref_str
+				<< "\\" << m_lat_str << m_lon_str << dataset2str << m_lod_str
+				<< "_" << m_uref_str << "_" << m_rref_str << filetype2str;
+		}
+		else
+		{
+			aflcbuf << m_LayerName << dataset2str.substr(5) << "Cls_" << m_lod_str;
+		}
+		ModelSet.APLightsDbfName = aflcbuf.str();
+
+		dataset2str = "_D100_S005_T001_";
+		std::stringstream envlbuf;
+		if (!m_DataFromGlobal)
+		{
+			envlbuf << cdbRootDir
+				<< "\\Tiles"
+				<< "\\" << m_lat_str
+				<< "\\" << m_lon_str
+				<< "\\" << m_LayerName
+				<< "\\" << m_lod_str
+				<< "\\" << m_uref_str
+				<< "\\" << m_lat_str << m_lon_str << dataset2str << m_lod_str
+				<< "_" << m_uref_str << "_" << m_rref_str << filetype;
+		}
+		else
+		{
+			envlbuf << m_LayerName << dataset2str.substr(5) << "Pnt_" << m_lod_str;
+		}
+		ModelSet.EnvLightsName = envlbuf.str();
+
+		dataset2str = "_D100_S005_T002_";
+		std::stringstream envlcbuf;
+		if (!m_DataFromGlobal)
+		{
+			envlcbuf << cdbRootDir
+				<< "\\Tiles"
+				<< "\\" << m_lat_str
+				<< "\\" << m_lon_str
+				<< "\\" << m_LayerName
+				<< "\\" << m_lod_str
+				<< "\\" << m_uref_str
+				<< "\\" << m_lat_str << m_lon_str << dataset2str << m_lod_str
+				<< "_" << m_uref_str << "_" << m_rref_str << filetype2str;
+		}
+		else
+		{
+			envlcbuf << m_LayerName << dataset2str.substr(5) << "Cls_" << m_lod_str;
+		}
+		ModelSet.EnvLightsDbfName = envlcbuf.str();
+
 		m_ModelSet.push_back(ModelSet);
 	}
 	else if (m_TileType == GeoTypicalModel)
@@ -490,6 +572,16 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 			}
 			m_ModelSet[0].ModelGeometryNameExists = validate_tile_name(m_ModelSet[0].ModelGeometryName);
 			m_ModelSet[0].ModelTextureNameExists = validate_tile_name(m_ModelSet[0].ModelTextureName);
+			if (gbls->Get_Use_GeoPackage_Features())
+			{
+				m_ModelSet[0].APLightsExists = validate_tile_name(m_ModelSet[0].APLightsName);
+				m_ModelSet[0].EnvLightsExists = validate_tile_name(m_ModelSet[0].EnvLightsName);
+			}
+			else
+			{
+				m_ModelSet[0].APLightsExists = validate_tile_name(m_ModelSet[0].APLightsName) && validate_tile_name(m_ModelSet[0].APLightsDbfName);
+				m_ModelSet[0].EnvLightsExists = validate_tile_name(m_ModelSet[0].EnvLightsName) && validate_tile_name(m_ModelSet[0].EnvLightsDbfName);
+			}
 		}
 		else
 		{
@@ -509,6 +601,7 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 			temp = "gpkg:" + m_ModelSet[0].ModelTextureName + ":" + m_uref_str + ":" + m_rref_str + ".zip";
 			m_ModelSet[0].ModelTextureName = temp;
 			m_ModelSet[0].ModelTextureNameExists = gbls->Load_Media(m_ModelSet[0].ModelTextureName, tileKey);
+			//Add lights here after implimenting in gbls
 		}
 		m_ModelSet[0].ModelWorkingName = m_FileName;
 		m_ModelSet[0].ModelWorkingNameExists = m_FileExists;
@@ -616,7 +709,7 @@ bool CDB_Tile::DataFromGlobal(void)
 bool CDB_Tile::Build_GS_Stack(void)
 {
 	CDB_Global* gbls = CDB_Global::getInstance();
-
+	//Note: Skipping AF and Env Lights as only need one LOD for them
 	for (int nlod = 1; nlod <= 10; ++nlod)
 	{
 		int cdbLod = nlod * -1;
