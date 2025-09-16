@@ -48,12 +48,12 @@ CDB_Data_Dictionary  CDB_Data_Dictionary_Instance;
 
 
 CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Type TileType, std::string dataset, CDB_Tile_Extent* TileExtent, bool lightmap, bool material, bool material_mask, int NLod, bool DataFromGlobal) :
-	m_cdbRootDir(cdbRootDir), m_cdbCacheDir(cdbCacheDir),
-	m_DataSet(dataset), m_TileExtent(*TileExtent), m_TileType(TileType), m_ImageContent_Status(NotSet), m_Tile_Status(Created), m_FileName(""), m_LayerName(""), m_FileExists(false),
-	m_CDB_LOD_Num(0), m_Subordinate_Exists(false), m_SubordinateName(""), m_lat_str(""), m_lon_str(""), m_lod_str(""), m_uref_str(""), m_rref_str(""), m_Subordinate_Tile(false),
-	m_Use_Spatial_Rect(false), m_SubordinateName2(""), m_Subordinate2_Exists(false), m_Have_MaterialMaskData(false), m_Have_MaterialData(false), m_EnableLightMap(lightmap),
-	m_EnableMaterials(material), m_EnableMaterialMask(material_mask), m_DataFromGlobal(DataFromGlobal), m_GlobalDataset(NULL), m_HaveDataDictionary(false), m_GlobalTile(NULL),
-	m_Globalcontype(ConnNone)
+				   m_cdbRootDir(cdbRootDir), m_cdbCacheDir(cdbCacheDir),
+				   m_DataSet(dataset), m_TileExtent(*TileExtent), m_TileType(TileType), m_ImageContent_Status(NotSet), m_Tile_Status(Created), m_FileName(""), m_LayerName(""), m_FileExists(false),
+				   m_CDB_LOD_Num(0), m_Subordinate_Exists(false), m_SubordinateName(""), m_lat_str(""), m_lon_str(""), m_lod_str(""), m_uref_str(""), m_rref_str(""), m_Subordinate_Tile(false),
+				   m_Use_Spatial_Rect(false), m_SubordinateName2(""), m_Subordinate2_Exists(false), m_Have_MaterialMaskData(false), m_Have_MaterialData(false), m_EnableLightMap(lightmap),
+				   m_EnableMaterials(material), m_EnableMaterialMask(material_mask), m_DataFromGlobal(DataFromGlobal), m_GlobalDataset(NULL), m_HaveDataDictionary(false), m_GlobalTile(NULL),
+				   m_Globalcontype(ConnNone)
 {
 	m_GTModelSet.clear();
 	CDB_Global* gbls = CDB_Global::getInstance();
@@ -103,8 +103,9 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 
 	CDB_Data_Dictionary* datDict = CDB_Data_Dictionary::GetInstance();
 	if (datDict->Init_Feature_Data_Dictionary(m_cdbRootDir))
-		m_HaveDataDictionary = true;
-
+	{
+		m_HaveDataDictionary = datDict->Have_Data_Dictionary();
+	}
 
 	if (m_TileType == Elevation)
 	{
@@ -3897,19 +3898,26 @@ std::string CDB_Tile::Model_ZipDir(void)
 	return modbuf.str();
 }
 
-bool CDB_Tile::validate_tile_name(std::string& filename)
+bool CDB_Tile::validate_tile_name(std::string &filename)
 {
 #ifdef _WIN32
 	DWORD ftyp = ::GetFileAttributes(filename.c_str());
 	if (ftyp == INVALID_FILE_ATTRIBUTES)
 	{
-		DWORD error = ::GetLastError();
-		if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND)
+		if(CDB_Data_Dictionary::GetInstance()->Is_Multi_Version())
 		{
-			return false;
+			return CDB_Data_Dictionary::GetInstance()->validate_tile_name(filename);
 		}
 		else
-			return false;
+		{
+			DWORD error = ::GetLastError();
+			if (error == ERROR_FILE_NOT_FOUND || error == ERROR_PATH_NOT_FOUND)
+			{
+				return false;
+			}
+			else
+				return false;
+			}
 	}
 	return true;
 #else
@@ -3920,7 +3928,12 @@ bool CDB_Tile::validate_tile_name(std::string& filename)
 	}
 	else
 	{
-		return false;
+		if (CDB_Data_Dictionary::GetInstance()->Is_Multi_Version())
+		{
+			return CDB_Data_Dictionary::GetInstance()->validate_tile_name(filename);
+		}
+		else
+			return false;
 	}
 #endif
 }
@@ -4580,7 +4593,7 @@ OGRFeature* OGR_File::Next_Valid_Feature(std::string& ModelKeyName, std::string&
 	}
 	return f;
 }
-CDB_Data_Dictionary::CDB_Data_Dictionary() : m_dataDictDoc(NULL), m_dataDictData(NULL), m_IsInitialized(false)
+CDB_Data_Dictionary::CDB_Data_Dictionary() : m_dataDictDoc(NULL), m_dataDictData(NULL), m_IsInitialized(false), m_hasCategories(false), m_IsMultiVolume(false)
 {
 
 }
@@ -4594,12 +4607,78 @@ bool CDB_Data_Dictionary::Init_Feature_Data_Dictionary(std::string CDB_Root_Dir)
 		m_dataDictData = m_dataDictDoc->load(xmlFileName);
 		if (m_dataDictData)
 		{
-			bool hasCategories;
-			hasCategories = Get_Model_Base_Catagory_List(m_BaseCategories);
-			m_IsInitialized = hasCategories;
+			m_hasCategories = Get_Model_Base_Catagory_List(m_BaseCategories);
 		}
+		m_CDBRoodDirs.clear();
+		m_CDBRoodDirs.push_back(CDB_Root_Dir);
+		m_IsInitialized = Get_Version_Chain(CDB_Root_Dir);
+		m_IsMultiVolume = m_CDBRoodDirs.size() > 1;
 	}
 	return m_IsInitialized;
+}
+
+bool CDB_Data_Dictionary::Have_Data_Dictionary(void)
+{
+	return m_hasCategories;
+}
+
+bool CDB_Data_Dictionary::Is_Multi_Version(void)
+{
+	return m_IsMultiVolume;
+}
+
+bool CDB_Data_Dictionary::validate_tile_name(std::string &filename)
+{
+	int nsearch = m_CDBRoodDirs.size();
+	int curRoot = 1; //We already tried the first root last root path in CDBTile
+	while (curRoot < nsearch)
+	{
+		std::string oldRoot = m_CDBRoodDirs[curRoot-1];
+		size_t oldlength = oldRoot.length();
+		std::string nextRoot = m_CDBRoodDirs[curRoot];
+		filename = filename.replace(0, oldlength, nextRoot);
+#ifdef _WIN32
+		DWORD ftyp = ::GetFileAttributes(filename.c_str());
+		if (ftyp != INVALID_FILE_ATTRIBUTES)
+		{
+			return true;
+		}
+#else
+		int ftyp = ::access(filename.c_str(), F_OK);
+		if (ftyp == 0)
+		{
+			return  true;
+		}
+#endif
+		++curRoot;
+	}
+	return false;
+}
+
+bool CDB_Data_Dictionary::Get_Version_Chain(std::string CDBRootDir)
+{
+	std::string xmlFileName = CDBRootDir + "\\Metadata\\Version.xml";
+	osgEarth::XmlDocument * CDBVersionDoc = new osgEarth::XmlDocument();
+	bool FoundFirstVersion = false;
+	osgEarth::XmlDocument * CDBVersionData = CDBVersionDoc->load(xmlFileName);
+	if (CDBVersionData)
+	{
+		FoundFirstVersion = true;
+		osgEarth::XmlElement * elementList = (osgEarth::XmlElement *)CDBVersionData->getSubElement("PreviousIncrementalRootDirectory");
+		for (osgEarth::XmlNodeList::const_iterator i = elementList->getChildren().begin(); i != elementList->getChildren().end(); i++)
+		{
+			osgEarth::XmlElement *e = (osgEarth::XmlElement *)i->get();
+			std::string PrevVersion = e->getAttr("name");
+			if (PrevVersion != "")
+			{
+				m_CDBRoodDirs.push_back(PrevVersion);
+				Get_Version_Chain(PrevVersion);
+			}
+		}
+		delete CDBVersionData;
+	}
+	delete CDBVersionDoc;
+	return FoundFirstVersion;
 }
 
 bool CDB_Data_Dictionary::Get_Model_Base_Catagory_List(std::vector<CDB_Model_Code_Struct>& cats)
