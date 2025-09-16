@@ -1,6 +1,8 @@
-// Copyright (c) 2016-2017 Visual Awareness Technologies and Consulting Inc, St Petersburg FL
 // This file is based on the Common Database (CDB) Specification for USSOCOM
-// Version 3.0 – October 2008
+// Version 3.0 – October 2008 and OGC CDB standard 1.0 - 1.2
+//
+// Copyright (c) 2019-2025 GAJ Geospatial Enterprises, Orlando FL
+// Copyright (c) 2016-2017 Visual Awareness Technologies and Consulting Inc, St Petersburg FL
 
 // CDB_Tile is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
