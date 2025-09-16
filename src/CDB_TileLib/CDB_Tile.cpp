@@ -4664,11 +4664,10 @@ bool CDB_Data_Dictionary::Get_Version_Chain(std::string CDBRootDir)
 	if (CDBVersionData)
 	{
 		FoundFirstVersion = true;
-		osgEarth::XmlElement * elementList = (osgEarth::XmlElement *)CDBVersionData->getSubElement("PreviousIncrementalRootDirectory");
-		for (osgEarth::XmlNodeList::const_iterator i = elementList->getChildren().begin(); i != elementList->getChildren().end(); i++)
+		osgEarth::XmlElement * element = (osgEarth::XmlElement *)CDBVersionData->findElement("PreviousIncrementalRootDirectory");
+		if (element)
 		{
-			osgEarth::XmlElement *e = (osgEarth::XmlElement *)i->get();
-			std::string PrevVersion = e->getAttr("name");
+			std::string PrevVersion = element->getAttr("name");
 			if (PrevVersion != "")
 			{
 				m_CDBRoodDirs.push_back(PrevVersion);
@@ -4696,6 +4695,7 @@ bool CDB_Data_Dictionary::Get_Model_Base_Catagory_List(std::vector<CDB_Model_Cod
 	}
 	return true;
 }
+
 bool CDB_Data_Dictionary::Get_Model_Sub_Catagory_List(osgEarth::XmlElement* catElement, CDB_Model_Code_Struct& subCats)
 {
 	for (osgEarth::XmlNodeList::const_iterator i = catElement->getChildren().begin(); i != catElement->getChildren().end(); i++)
