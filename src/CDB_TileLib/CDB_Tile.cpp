@@ -1941,7 +1941,12 @@ bool CDB_Tile::Init_GS_Model_Tile(unsigned int pos)
 			if (!m_ModelSet[pos].ClassTileOgr)
 				return false;
 		}
-		m_ModelSet[pos].PrimaryLayer = m_ModelSet[pos].PrimaryTileOgr->GetLayer(0);
+
+		if(m_ModelSet[pos].PrimaryTileOgr)
+			m_ModelSet[pos].PrimaryLayer = m_ModelSet[pos].PrimaryTileOgr->GetLayer(0);
+		else
+			m_ModelSet[pos].PrimaryLayer = nullptr;
+
 		if (!m_ModelSet[pos].PrimaryLayer)
 			return false;
 		if (m_Use_Spatial_Rect)
@@ -2024,16 +2029,27 @@ bool CDB_Tile::Init_GT_Model_Tile(int sel)
 #ifdef _DEBUG
 	int fubar = 0;
 #endif
+	CDB_Global* gbls = CDB_Global::getInstance();
+
 	if (!m_DataFromGlobal)
 	{
-		if (!m_GTModelSet[sel].ClassTileOgr)
-			return false;
-		m_GTModelSet[sel].PrimaryLayer = m_GTModelSet[sel].PrimaryTileOgr->GetLayer(0);
-		if (m_Use_Spatial_Rect)
+		if (!gbls->Get_Use_GeoPackage_Features())
 		{
-			m_GTModelSet[sel].PrimaryLayer->SetSpatialFilterRect(m_SpatialRectExtent.West, m_SpatialRectExtent.South, m_SpatialRectExtent.East, m_SpatialRectExtent.North);
+			if (!m_GTModelSet[sel].ClassTileOgr)
+				return false;
 		}
-		m_GTModelSet[sel].FeatureSet.LoadFeatureSet(m_GTModelSet[sel].PrimaryLayer);
+		if(!m_GTModelSet[sel].PrimaryTileOgr)
+			m_GTModelSet[sel].PrimaryLayer = nullptr;
+		else
+		{
+			m_GTModelSet[sel].PrimaryLayer = m_GTModelSet[sel].PrimaryTileOgr->GetLayer(0);
+
+			if (m_Use_Spatial_Rect)
+			{
+				m_GTModelSet[sel].PrimaryLayer->SetSpatialFilterRect(m_SpatialRectExtent.West, m_SpatialRectExtent.South, m_SpatialRectExtent.East, m_SpatialRectExtent.North);
+			}
+			m_GTModelSet[sel].FeatureSet.LoadFeatureSet(m_GTModelSet[sel].PrimaryLayer);
+		}
 	}
 	else
 	{
