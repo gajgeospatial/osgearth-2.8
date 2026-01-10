@@ -542,7 +542,7 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 				//				t.ClassExists = gbls->Has_Layer(t.TileSecondaryShapeName);
 			}
 			t.RealSel = i - 1;
-			if (t.PrimaryExists && t.ClassExists)
+			if (t.PrimaryExists && (t.ClassExists || gbls->Get_Use_GeoPackage_Features()))
 				m_GTModelSet.push_back(t);
 		}
 	}
@@ -1528,42 +1528,56 @@ bool CDB_Tile::Open_GS_Model_Tile(void)
 bool CDB_Tile::Open_GT_Model_Tile(void)
 {
 	bool have_an_opening = false;
+	CDB_Global* gbls = CDB_Global::getInstance();
 	for (size_t i = 0; i < m_GTModelSet.size(); ++i)
 	{
 		if (!m_DataFromGlobal)
 		{
-			if (m_GTModelSet[i].PrimaryExists && m_GTModelSet[i].ClassExists)
+			if (m_GTModelSet[i].PrimaryExists && (m_GTModelSet[i].ClassExists || gbls->Get_Use_GeoPackage_Features()))
 			{
-				GDALOpenInfo oOpenInfoP(m_GTModelSet[i].TilePrimaryShapeName.c_str(), GA_ReadOnly);
-				m_GTModelSet[i].PrimaryTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoP);
+				if(gbls->Get_Use_GeoPackage_Features())
+				{
+					char* drivers[2];
+					drivers[0] = "GPKG";
+					drivers[1] = NULL;
+					m_GTModelSet[i].PrimaryTileOgr = (GDALDataset*)GDALOpenEx(m_GTModelSet[i].TilePrimaryShapeName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly | GDAL_OF_SHARED, drivers, NULL, NULL);
+				}
+				else
+				{
+					GDALOpenInfo oOpenInfoP(m_GTModelSet[i].TilePrimaryShapeName.c_str(), GA_ReadOnly);
+					m_GTModelSet[i].PrimaryTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoP);
+				}
 				if (!m_GTModelSet[i].PrimaryTileOgr)
 					continue;
-				GDALOpenInfo oOpenInfoC(m_GTModelSet[i].TileSecondaryShapeName.c_str(), GA_ReadOnly);
-				m_GTModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
-				if (!m_GTModelSet[i].ClassTileOgr)
+				if(!gbls->Get_Use_GeoPackage_Features())
 				{
-					//Check for junk files clogging up the works
-					std::string shx = Set_FileType(m_GTModelSet[i].TileSecondaryShapeName, ".shx");
-					if (validate_tile_name(shx))
-					{
-						if (::DeleteFile(shx.c_str()) == 0)
-						{
-							continue;
-						}
-					}
-					std::string shp = Set_FileType(m_GTModelSet[i].TileSecondaryShapeName, ".shp");
-					if (validate_tile_name(shp))
-					{
-						if (::DeleteFile(shp.c_str()) == 0)
-						{
-							continue;
-						}
-					}
+					GDALOpenInfo oOpenInfoC(m_GTModelSet[i].TileSecondaryShapeName.c_str(), GA_ReadOnly);
 					m_GTModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
 					if (!m_GTModelSet[i].ClassTileOgr)
-						continue;
+					{
+						//Check for junk files clogging up the works
+						std::string shx = Set_FileType(m_GTModelSet[i].TileSecondaryShapeName, ".shx");
+						if (validate_tile_name(shx))
+						{
+							if (::DeleteFile(shx.c_str()) == 0)
+							{
+								continue;
+							}
+						}
+						std::string shp = Set_FileType(m_GTModelSet[i].TileSecondaryShapeName, ".shp");
+						if (validate_tile_name(shp))
+						{
+							if (::DeleteFile(shp.c_str()) == 0)
+							{
+								continue;
+							}
+						}
+						m_GTModelSet[i].ClassTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoC);
+						if (!m_GTModelSet[i].ClassTileOgr)
+							continue;
+					}
 				}
-				if (m_GTModelSet[i].PrimaryTileOgr && m_GTModelSet[i].ClassTileOgr)
+				if (m_GTModelSet[i].PrimaryTileOgr && (m_GTModelSet[i].ClassTileOgr || gbls->Get_Use_GeoPackage_Features()))
 					have_an_opening = true;
 			}
 		}
@@ -2095,7 +2109,7 @@ bool CDB_Tile::Init_GT_Model_Tile(int sel)
 
 	//	m_GTModelSet[sel].PrimaryLayer->ResetReading();
 	OGRLayer* poLayer = NULL;
-	if (!m_DataFromGlobal)
+	if (!m_DataFromGlobal && !gbls->Get_Use_GeoPackage_Features())
 	{
 		poLayer = m_GTModelSet[sel].ClassTileOgr->GetLayer(0);
 	}
@@ -2105,7 +2119,7 @@ bool CDB_Tile::Init_GT_Model_Tile(int sel)
 	//	}
 
 	bool have_class = false;
-	if (m_DataFromGlobal)
+	if (m_DataFromGlobal || gbls->Get_Use_GeoPackage_Features())
 	{
 		//CDB_Model_RuntimeMapP clsMap = m_GlobalTile->GetGTClassMap(m_CDB_LOD_Num, sel);
 		//if (clsMap->size() == 0)

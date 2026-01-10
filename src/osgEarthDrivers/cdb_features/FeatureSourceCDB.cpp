@@ -686,7 +686,6 @@ private:
 		OGR_SCOPED_LOCK;
 		_SubsitutionCount = 0;
 		// find the right driver for the given mime type
-		bool fudgeelevation = _Use_GPKG_For_Features;
 		bool have_archive = false;
 		bool have_texture_zipfile = false;
 #ifdef _DEBUG
@@ -773,10 +772,7 @@ private:
 						OGRPoint * poPoint = (OGRPoint *)geo;
 						double Mpos = poPoint->getM();
 						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
-						if(fudgeelevation)
-							poPoint->setZ(3.0);
-						else
-							poPoint->setZ(Mpos + ZoffsetPos);
+						poPoint->setZ(Mpos + ZoffsetPos);
 
 					}
 				}
