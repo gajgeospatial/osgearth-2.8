@@ -1447,10 +1447,16 @@ bool CDB_Tile::Open_GS_Model_Tile(void)
 			{
 				if (m_ModelSet[i].ModelWorkingNameExists)
 				{
+#if 1
+					GDALOpenInfo oOpenInfoP(m_ModelSet[i].ModelWorkingName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly | GDAL_OF_SHARED);
+					m_ModelSet[i].PrimaryTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoP);
+
+#else
 					char* drivers[2];
 					drivers[0] = "GPKG";
 					drivers[1] = NULL;
 					m_ModelSet[i].PrimaryTileOgr = (GDALDataset*)GDALOpenEx(m_ModelSet[i].ModelWorkingName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly | GDAL_OF_SHARED, drivers, NULL, NULL);
+#endif
 					if (!m_ModelSet[i].PrimaryTileOgr)
 					{
 						valid_set = false;
@@ -1537,10 +1543,16 @@ bool CDB_Tile::Open_GT_Model_Tile(void)
 			{
 				if(gbls->Get_Use_GeoPackage_Features())
 				{
+#if 1
+					GDALOpenInfo oOpenInfoP(m_GTModelSet[i].TilePrimaryShapeName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly | GDAL_OF_SHARED);
+					m_GTModelSet[i].PrimaryTileOgr = m_GDAL.poDriver->pfnOpen(&oOpenInfoP);
+#else
+
 					char* drivers[2];
 					drivers[0] = "GPKG";
 					drivers[1] = NULL;
 					m_GTModelSet[i].PrimaryTileOgr = (GDALDataset*)GDALOpenEx(m_GTModelSet[i].TilePrimaryShapeName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly | GDAL_OF_SHARED, drivers, NULL, NULL);
+#endif
 				}
 				else
 				{
