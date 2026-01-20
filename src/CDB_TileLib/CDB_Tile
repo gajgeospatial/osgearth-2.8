@@ -236,6 +236,8 @@ struct CDB_Model_Tile_Set
 	CDB_EnvLights_RuntimeMap EnvLightMap;
 	osgDB::Archive::FileNameList archiveFileList;
 	CDB_ModelFeature_Set FeatureSet;
+	CDB_ModelFeature_Set AP_Lights_FeatureSet;
+	CDB_ModelFeature_Set Env_Lights_FeatureSet;
 #ifdef _DEBUG
 	CDB_ModelFeature_Set DebugFeatureSet;
 #endif
@@ -335,6 +337,14 @@ public:
 
 	bool Tile_Exists(int sel = -1);
 
+	bool AF_Lights_Exist(int sel);
+
+	bool ENV_Lights_Exist(int sel);
+
+	bool Have_AF_Lights(int sel);
+
+	bool Have_ENV_Lights(int sel);
+	
 	bool Has_Mask_Data(void);
 
 	bool Has_Material_Data(void);
@@ -379,10 +389,18 @@ public:
 
 	bool Init_Map_Tile(void);
 
-	OGRFeature* Next_Valid_Feature(int sel, bool inflated, std::string& ModelKeyName, std::string& FullModelName,
+	OGRFeature * Next_Valid_Feature(int sel, bool inflated, std::string& ModelKeyName, std::string& FullModelName,
 		std::string& ArchiveFileName, bool& Model_in_Archive);
 
+	OGRFeature * Next_Valid_AFLight_Feature(unsigned int pos);
+
+	OGRFeature * Next_Valid_EnvLight_Feature(unsigned int pos);
+
 	bool DestroyCurrentFeature(int sel);
+
+	bool DestroyCurrentAFLightFeature(int sel);
+
+	bool DestroyCurrentEnvLightFeature(int sel);
 
 	bool Set_SpatialFilter_Extent(CDB_Tile_Extent& SpatialExtent);
 
@@ -401,6 +419,10 @@ public:
 	int Model_Sel_Count(void);
 
 	CDB_Model_Runtime_Class Current_Feature_Class_Data(void);
+
+	CDB_AP_Light_Class  Current_AF_Light_Class_Data(void);
+
+	CDB_Env_Light_Class  Current_Env_Light_Class_Data(void);
 
 	osgDB::Archive::FileNameList* Model_Archive_List(unsigned int pos = 0);
 
@@ -436,6 +458,7 @@ public:
 	static void Set_LOD0_GT_Stack(bool value);
 
 	static void Set_Verbose(bool value);
+
 	static void Set_Use_Gpkg_For_Features(bool value);
 
 	static CDB_Tile_Extent Actual_Extent_For_Tile(CDB_Tile_Extent& TileExtent);
@@ -480,6 +503,8 @@ private:
 	bool					m_EnableMaterialMask;
 	bool					m_DataFromGlobal;
 	CDB_Model_Runtime_Class m_CurFeatureClass;
+	CDB_AP_Light_Class      m_CurAfLightClass;
+	CDB_Env_Light_Class		m_CurEnvLightClass;
 	GDALDataset* m_GlobalDataset;
 	ModelOgrTileP			m_GlobalTile;
 	GBLConnectionType		m_Globalcontype;
@@ -532,10 +557,18 @@ private:
 	bool Init_GT_Model_Tile(int sel);
 
 	bool Load_Class_Map(OGRLayer* poLayer, CDB_Model_RuntimeMap& clsMap);
+	
+	bool Load_AFL_Class_Map(OGRLayer* poLayer, CDB_APLights_RuntimeMap& clsMap);
+
+	bool Load_ENVL_Class_Map(OGRLayer* poLayer, CDB_EnvLights_RuntimeMap& clsMap);
 
 	int Find_Field_Index(OGRFeatureDefn* poFDefn, std::string fieldname, OGRFieldType Type);
 
 	bool Load_Archive(std::string ArchiveName, osgDB::Archive::FileNameList& archiveFileList);
+
+	bool Load_AF_Lights(int sel);
+
+	bool Load_ENV_Lights(int sel);
 
 	bool Build_GS_Stack(void);
 
@@ -560,10 +593,17 @@ private:
 
 	bool DestroyCurrent_GeoTypical_Feature(int sel);
 
+	bool DestroyCurrent_AFLight(int sel);
+
+	bool DestroyCurrent_EnvLight(int sel);
+
 	std::string Model_TextureDir(void);
 
 	bool Open_GP_Map_Tile(void);
 
+	bool Open_AF_Lights();
+
+	bool Open_ENV_Lights();
 
 };
 
