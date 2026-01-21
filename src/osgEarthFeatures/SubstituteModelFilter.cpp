@@ -284,7 +284,12 @@ SubstituteModelFilter::process(const FeatureList&           features,
 			trackingSet = true;
 		}
 #endif
+        bool feature_defined_light = false;
 		bool feature_defined_model = input->hasAttr("osge_modelname");
+        if(!feature_defined_model)
+        {
+            feature_defined_light = input->hasAttr("osge_lighttype");
+        }
 		bool skip_multitexdisable = input->hasAttr("osge_nomultidisable");
 		bool replace = false;
 
@@ -356,6 +361,10 @@ SubstituteModelFilter::process(const FeatureList&           features,
 			else
 				feature_defined_preInstanced = true;
 		}
+        else if(feature_defined_light)
+        {
+            //Impliment Light
+        }
 		else
 		{
 			st = input->eval(uriEx, &context);

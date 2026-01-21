@@ -393,7 +393,7 @@ CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Typ
 		{
 			aflbuf << m_LayerName << dataset2str.substr(5) << "Pnt_" << m_lod_str;
 		}
-		ModelSet.APLightsName = dbfbuf.str();
+		ModelSet.APLightsName = aflbuf.str();
 
 		dataset2str = "_D100_S004_T002_";
 		std::stringstream aflcbuf;
@@ -1920,12 +1920,14 @@ bool CDB_Tile::DestroyCurrentAFLightFeature(int sel)
 {
 	if (m_TileType == GeoSpecificModel)
 		return DestroyCurrent_AFLight(sel);
+	return false;
 }
 
 bool CDB_Tile::DestroyCurrentEnvLightFeature(int sel)
 {
 	if (m_TileType == GeoSpecificModel)
 		return DestroyCurrent_EnvLight(sel);
+	return false;
 }
 
 bool CDB_Tile::DestroyCurrent_Geospecific_Feature(int sel)

@@ -115,6 +115,8 @@ public:
 	  _GT_LOD0_FullStack(false),
 	  _GS_LOD0_FullStack(false),
 	  _cur_Feature_Cnt(0),
+	  _cur_AFLight_Cnt(0),
+	  _cur_EnvLight_Cnt(0),
 	  _rootString(""),
 	  _FileName(""),
 	  _cacheDir(""),
@@ -479,6 +481,8 @@ public:
 #endif
         FeatureCursor* result = 0L;
 		_cur_Feature_Cnt = 0;
+		_cur_AFLight_Cnt = 0;
+		_cur_EnvLight_Cnt = 0;
 		// Make sure the root directory is set
 		if (!_options.rootDir().isSet())
 		{
@@ -618,6 +622,46 @@ public:
 						OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has no features"  << std::endl;
 					}
 				}
+				bool Have_AF_Lights = false;
+				bool Have_Env_Lights = false;
+				if (!GeoTypicalModel)
+				{
+					if (mainTile->AF_Lights_Exist(FilesChecked))
+					{
+						if (mainTile->Have_AF_Lights(FilesChecked))
+						{
+							if (_BE_Verbose)
+							{
+								OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << "Airfield Lights" << std::endl;
+							}
+							int inNumAfLights = _cur_AFLight_Cnt;
+							Have_AF_Lights = getAFLightFeatures(mainTile, base, features, FilesChecked);
+							int NumLightsThisTile = _cur_AFLight_Cnt - inNumAfLights;
+							if (_BE_Verbose)
+							{
+								OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " found " << NumLightsThisTile << " Airfield Lights" << std::endl;
+							}
+						}
+					}
+					if (mainTile->ENV_Lights_Exist(FilesChecked))
+					{
+						if (_BE_Verbose)
+						{
+							OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << "Environment Lights" << std::endl;
+						}
+						int inNumEnvLights = _cur_EnvLight_Cnt;
+						if (mainTile->Have_ENV_Lights(FilesChecked))
+						{
+							Have_Env_Lights = getEnvLightFeatures(mainTile, base, features, FilesChecked);
+						}
+						int NumLightsThisTile = _cur_EnvLight_Cnt - inNumEnvLights;
+						if (_BE_Verbose)
+						{
+							OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " found " << NumLightsThisTile << " Airfield Lights" << std::endl;
+						}
+					}
+
+				}
 
 				if (fileOk)
 					dataOK = true;
@@ -626,22 +670,6 @@ public:
 					if (!_UsingFileInput)
 						Registry::instance()->blacklist(base);
 				}
-			}
-			if(!GeoTypicalModel)
-			{
-				if(mainTile->AF_Lights_Exist(FilesChecked))
-				{
-					if(mainTile->Have_AF_Lights(FilesChecked))
-					{
-					}
-				}
-				if (mainTile->ENV_Lights_Exist(FilesChecked))
-				{
-					if (mainTile->Have_ENV_Lights(FilesChecked))
-					{
-					}
-				}
-
 			}
 			++FilesChecked;
 		}
@@ -1163,12 +1191,119 @@ private:
 				f->set("zoffset", ZoffsetPos);
 
 			}
-			++_cur_Feature_Cnt;
+			f->set("osge_lighttype", "AirField Light");
+
+			++_cur_AFLight_Cnt;
 
 			if (valid_model)
 			{
 				//Ok we have everthing needed to load this model at this lod
 				//Set the atribution to tell osgearth to load the model
+				std::string cdbLtype = feat_handle->GetFieldAsString("LTYP");
+				//Set osg light parameters based on cdbLtype
+			}
+
+			if (f.valid() && !isBlacklisted(f->getFID()))
+			{
+				if (valid_model)
+				{
+					features.push_back(f.release());
+				}
+				else
+					f.release();
+			}
+			mainTile->DestroyCurrentAFLightFeature(sel);
+		}
+		return true;
+	}
+
+	bool getEnvLightFeatures(CDB_Tile * mainTile, const std::string & buffer, FeatureList & features, int sel)
+	{
+		// find the right driver for the given mime type
+		OGR_SCOPED_LOCK;
+#ifdef _DEBUG
+		int fubar = 0;
+#endif
+		std::string TileNameStr;
+		if (_CDB_Edit_Support)
+		{
+			TileNameStr = osgDB::getSimpleFileName(buffer);
+			TileNameStr = osgDB::getNameLessExtension(TileNameStr);
+		}
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL (2,7,0)
+#else
+		const SpatialReference* srs = SpatialReference::create("EPSG:4326");
+#endif
+
+		osg::ref_ptr<osgDB::Options> localoptions = _dbOptions->cloneOptions();
+
+		bool done = false;
+		while (!done)
+		{
+			OGRFeature* feat_handle;
+			bool valid_model = true;
+			feat_handle = mainTile->Next_Valid_EnvLight_Feature(sel);
+			if (feat_handle == NULL)
+			{
+				done = true;
+				break;
+			}
+
+			double ZoffsetPos = 0.0;
+			CDB_Env_Light_Class FeatureClass = mainTile->Current_Env_Light_Class_Data();
+			int zsetabs = FeatureClass.ahgt;
+			if (!zsetabs)
+			{
+				if (_M_Contains_ABS_Z)
+				{
+					OGRGeometry* geo = feat_handle->GetGeometryRef();
+					if (wkbFlatten(geo->getGeometryType()) == wkbPoint)
+					{
+						OGRPoint* poPoint = (OGRPoint*)geo;
+						double Mpos = poPoint->getM();
+						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
+						poPoint->setZ(Mpos + ZoffsetPos);
+
+					}
+				}
+			}
+
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL (2,7,0)
+			osg::ref_ptr<Feature> f = OgrUtils::createFeature((OGRFeatureH)feat_handle, getFeatureProfile());
+#else
+			osg::ref_ptr<Feature> f = OgrUtils::createFeature(feat_handle, srs);
+#endif
+			f->setFID(_s_CDB_FeatureID);
+			++_s_CDB_FeatureID;
+
+
+			if (_CDB_Edit_Support)
+			{
+				std::stringstream format_stream;
+				format_stream << TileNameStr << "_" << std::setfill('0')
+					<< std::setw(5) << abs(_cur_Feature_Cnt);
+
+				f->set("name", "Environment Light");
+				std::string transformName = "xform_" + format_stream.str();
+				f->set("transformname", transformName);
+				std::string mtypevalue;
+				mtypevalue = "geospecific";
+				f->set("modeltype", mtypevalue);
+				f->set("tilename", buffer);
+				f->set("selection", sel);
+				f->set("zoffset", ZoffsetPos);
+
+			}
+			++_cur_EnvLight_Cnt;
+			f->set("osge_lighttype", "Environment Light");
+
+			if (valid_model)
+			{
+				//Ok we have everthing needed to load this model at this lod
+				//Set the atribution to tell osgearth to load the model
+				std::string cdbLtype = feat_handle->GetFieldAsString("LTYP");
+				//Set osg light parameters based on cdbLtype
 			}
 
 			if (f.valid() && !isBlacklisted(f->getFID()))
@@ -1352,6 +1487,8 @@ private:
 	std::string						_GTGeomemtryTableName;
 	std::string						_GTTextureTableName;
 	int								_cur_Feature_Cnt;
+	int								_cur_AFLight_Cnt;
+	int								_cur_EnvLight_Cnt;
 	bool							_Materials;
 	bool							_HaveEditLimits;
 	CDB_Tile_Extent					_Edit_Tile_Extent;
