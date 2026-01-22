@@ -78,7 +78,13 @@ namespace osgEarth { namespace Drivers
 		optional<bool>& USE_GPKG_Features() { return _USE_GPKG_Features; }
 		const optional<bool>& USE_GPKG_Features() const { return _USE_GPKG_Features; }
 		optional<bool>& Materials() { return _Enable_Subord_Material; }
-		const optional<bool>& Materials() const { return _Enable_Subord_Material; }
+		const optional<bool>& Materials() const { return _Enable_Subord_Material; }		
+		optional<bool>& Lights() { return _Lights; }
+		const optional<bool>& Lights() const { return _Lights; }
+		optional<int>& LightLOD() { return _LightLOD; }
+		const optional<int>& LightLOD() const { return _LightLOD;}
+
+
 	public:
         CDBFeatureOptions( const ConfigOptions& opt =ConfigOptions() ) :
           FeatureSourceOptions( opt )
@@ -113,6 +119,8 @@ namespace osgEarth { namespace Drivers
 			conf.updateIfSet("abszinm", _ABS_Z_in_M);
 			conf.updateIfSet("featruesgpkg", _USE_GPKG_Features);
 			conf.updateIfSet("materials", _Enable_Subord_Material);
+			conf.updateIfSet("lights", _Lights);
+			conf.updateIfSet("lights_lod", _LightLOD);
 			return conf;
         }
 
@@ -145,6 +153,8 @@ namespace osgEarth { namespace Drivers
 			conf.getIfSet("materials", _Enable_Subord_Material);
 			conf.getIfSet("abszinm", _ABS_Z_in_M);
 			conf.getIfSet("featruesgpkg", _USE_GPKG_Features);
+			conf.getIfSet("lights", _Lights);
+			conf.getIfSet("lights_lod", _LightLOD);
 		}
 
 		optional<std::string> _rootDir;
@@ -168,6 +178,8 @@ namespace osgEarth { namespace Drivers
 		optional<bool> _ABS_Z_in_M;
 		optional<bool> _USE_GPKG_Features;
 		optional<bool> _Enable_Subord_Material;
+		optional<bool> _Lights;
+		optional<int>  _LightLOD;
 	};
 
 } } // namespace osgEarth::Drivers

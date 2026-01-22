@@ -126,6 +126,8 @@ public:
 	  _M_Contains_ABS_Z(false),
 	  _Use_GPKG_For_Features(false),
 	  _UsingFileInput(false),
+	  _LoadLights(false),
+	  _LightsLOD(0),
 	  _GTGeomemtryTableName(""),
 	  _GTTextureTableName(""),
 	  _HaveEditLimits(false),
@@ -202,6 +204,15 @@ public:
 				if (!_CDB_inflated)
 				{
 					_CDB_inflated = true;
+				}
+			}
+			else
+			{
+				if(_options.Lights().isSet())
+				{
+					_LoadLights = _options.Lights().value();
+					if(_options.LightLOD().isSet())
+						_LightsLOD = _options.LightLOD().value();
 				}
 			}
 		}
@@ -624,43 +635,39 @@ public:
 				}
 				bool Have_AF_Lights = false;
 				bool Have_Env_Lights = false;
-				if (!GeoTypicalModel)
+				if (!_CDB_geoTypical && _LoadLights)
 				{
-					if (mainTile->AF_Lights_Exist(FilesChecked))
+					if(_CDBLodNum == _LightsLOD)
 					{
-						if (mainTile->Have_AF_Lights(FilesChecked))
+						if (mainTile->AF_Lights_Exist(FilesChecked))
 						{
-							if (_BE_Verbose)
+							if (mainTile->Have_AF_Lights(FilesChecked))
 							{
-								OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << "Airfield Lights" << std::endl;
+								int inNumAfLights = _cur_AFLight_Cnt;
+								Have_AF_Lights = getAFLightFeatures(mainTile, base, features, FilesChecked);
+								int NumLightsThisTile = _cur_AFLight_Cnt - inNumAfLights;
+								if(NumLightsThisTile > 0)
+									Have_AF_Lights = true;
+								if (_BE_Verbose)
+								{
+									OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " found " << NumLightsThisTile << " Airfield Lights" << std::endl;
+								}
 							}
-							int inNumAfLights = _cur_AFLight_Cnt;
-							Have_AF_Lights = getAFLightFeatures(mainTile, base, features, FilesChecked);
-							int NumLightsThisTile = _cur_AFLight_Cnt - inNumAfLights;
+						}
+						if (mainTile->ENV_Lights_Exist(FilesChecked))
+						{
+							int inNumEnvLights = _cur_EnvLight_Cnt;
+							if (mainTile->Have_ENV_Lights(FilesChecked))
+							{
+								Have_Env_Lights = getEnvLightFeatures(mainTile, base, features, FilesChecked);
+							}
+							int NumLightsThisTile = _cur_EnvLight_Cnt - inNumEnvLights;
 							if (_BE_Verbose)
 							{
 								OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " found " << NumLightsThisTile << " Airfield Lights" << std::endl;
 							}
 						}
 					}
-					if (mainTile->ENV_Lights_Exist(FilesChecked))
-					{
-						if (_BE_Verbose)
-						{
-							OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " has " << "Environment Lights" << std::endl;
-						}
-						int inNumEnvLights = _cur_EnvLight_Cnt;
-						if (mainTile->Have_ENV_Lights(FilesChecked))
-						{
-							Have_Env_Lights = getEnvLightFeatures(mainTile, base, features, FilesChecked);
-						}
-						int NumLightsThisTile = _cur_EnvLight_Cnt - inNumEnvLights;
-						if (_BE_Verbose)
-						{
-							OSG_WARN << "File " << mainTile->FileName(FilesChecked) << " found " << NumLightsThisTile << " Airfield Lights" << std::endl;
-						}
-					}
-
 				}
 
 				if (fileOk)
@@ -1199,7 +1206,8 @@ private:
 			{
 				//Ok we have everthing needed to load this model at this lod
 				//Set the atribution to tell osgearth to load the model
-				std::string cdbLtype = feat_handle->GetFieldAsString("LTYP");
+				std::string cdbLtype = std::to_string(FeatureClass.ltyp);
+
 				//Set osg light parameters based on cdbLtype
 			}
 
@@ -1302,7 +1310,7 @@ private:
 			{
 				//Ok we have everthing needed to load this model at this lod
 				//Set the atribution to tell osgearth to load the model
-				std::string cdbLtype = feat_handle->GetFieldAsString("LTYP");
+				std::string cdbLtype = std::to_string(FeatureClass.ltyp);
 				//Set osg light parameters based on cdbLtype
 			}
 
@@ -1477,6 +1485,8 @@ private:
 	bool							_Use_GPKG_For_Features;
 	bool							_UsingFileInput;
 	bool							_SubsitutionCount;
+	bool							_LoadLights;
+	int								_LightsLOD;
     osg::ref_ptr<CacheBin>          _cacheBin;
     osg::ref_ptr<osgDB::Options>    _dbOptions;
 	int								_CDBLodNum;
