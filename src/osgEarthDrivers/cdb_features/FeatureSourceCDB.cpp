@@ -208,14 +208,19 @@ public:
 			}
 			else
 			{
-				if(_options.Lights().isSet())
-				{
-					_LoadLights = _options.Lights().value();
-					if(_options.LightLOD().isSet())
-						_LightsLOD = _options.LightLOD().value();
-				}
 			}
 		}
+
+		if(!_CDB_geoTypical)
+		{
+			if (_options.Lights().isSet())
+			{
+				_LoadLights = _options.Lights().value();
+				if (_options.LightLOD().isSet())
+					_LightsLOD = _options.LightLOD().value();
+			}
+		}
+
 		if (_options.Verbose().isSet())
 		{
 			bool verbose = _options.Verbose().value();
@@ -1206,9 +1211,10 @@ private:
 			{
 				//Ok we have everthing needed to load this model at this lod
 				//Set the atribution to tell osgearth to load the model
-				std::string cdbLtype = std::to_string(FeatureClass.ltyp);
+				int cdbLtype = FeatureClass.ltyp;
 
-				//Set osg light parameters based on cdbLtype
+				//Set osg light parameters for f based on cdbLtype
+				//Implimented code must have final instancing in SubstitudeModelFilter
 			}
 
 			if (f.valid() && !isBlacklisted(f->getFID()))
@@ -1310,8 +1316,10 @@ private:
 			{
 				//Ok we have everthing needed to load this model at this lod
 				//Set the atribution to tell osgearth to load the model
-				std::string cdbLtype = std::to_string(FeatureClass.ltyp);
-				//Set osg light parameters based on cdbLtype
+				int cdbLtype = FeatureClass.ltyp;
+
+				//Set osg light parameters for f based on cdbLtype
+				//Implimented code must have final instancing in SubstitudeModelFilter
 			}
 
 			if (f.valid() && !isBlacklisted(f->getFID()))

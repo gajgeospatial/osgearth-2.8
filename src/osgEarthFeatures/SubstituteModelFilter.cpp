@@ -363,7 +363,7 @@ SubstituteModelFilter::process(const FeatureList&           features,
 		}
         else if(feature_defined_light)
         {
-            //Impliment Light
+            //Take parameters added in FeatureSourceCDB and add lightpoints to graph
         }
 		else
 		{
