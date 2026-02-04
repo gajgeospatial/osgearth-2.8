@@ -5103,6 +5103,7 @@ OGRFeature* OGR_File::Next_Valid_Feature(std::string& ModelKeyName, std::string&
 	}
 	return f;
 }
+
 CDB_Data_Dictionary::CDB_Data_Dictionary() : m_dataDictDoc(NULL), m_dataDictData(NULL), m_IsInitialized(false), m_hasCategories(false), m_IsMultiVolume(false)
 {
 
@@ -5115,6 +5116,16 @@ bool CDB_Data_Dictionary::Init_Feature_Data_Dictionary(std::string CDB_Root_Dir)
 		std::string xmlFileName = CDB_Root_Dir + "\\Metadata\\Feature_Data_Dictionary.xml";
 		m_dataDictDoc = new osgEarth::XmlDocument();
 		m_dataDictData = m_dataDictDoc->load(xmlFileName);
+		if (!m_dataDictData)
+		{
+			char * dataDirC = getenv("GDAL_DATA");
+			if (dataDirC != nullptr)
+			{
+				std::string dataDir(dataDirC);
+				xmlFileName = dataDir + "\\CDB\\Feature_Data_Dictionary.xml";
+				m_dataDictData = m_dataDictDoc->load(xmlFileName);
+			}
+		}
 		if (m_dataDictData)
 		{
 			m_hasCategories = Get_Model_Base_Catagory_List(m_BaseCategories);
