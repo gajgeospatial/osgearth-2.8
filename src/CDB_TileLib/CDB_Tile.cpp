@@ -5130,6 +5130,11 @@ bool CDB_Data_Dictionary::Init_Feature_Data_Dictionary(std::string CDB_Root_Dir)
 		{
 			m_hasCategories = Get_Model_Base_Catagory_List(m_BaseCategories);
 		}
+		else
+		{
+			m_hasCategories = false;
+			OSG_WARN << "CDB " << CDB_Root_Dir << " did not find FeatureDataDictionary in MetaData" << std::endl;
+		}
 		m_CDBRoodDirs.clear();
 		m_CDBRoodDirs.push_back(CDB_Root_Dir);
 		m_IsInitialized = Get_Version_Chain(CDB_Root_Dir);
