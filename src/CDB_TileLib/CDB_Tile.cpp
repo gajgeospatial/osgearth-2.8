@@ -1,7 +1,7 @@
 // This file is based on the Common Database (CDB) Specification for USSOCOM
 // Version 3.0 – October 2008 and OGC CDB standard 1.0 - 1.2
 //
-// Copyright (c) 2019-2025 GAJ Geospatial Enterprises, Orlando FL
+// Copyright (c) 2019-2026 GAJ Geospatial Enterprises, Orlando FL
 // Copyright (c) 2016-2017 Visual Awareness Technologies and Consulting Inc, St Petersburg FL
 
 // CDB_Tile is free software: you can redistribute it and/or modify
@@ -2589,7 +2589,7 @@ bool CDB_Tile::Init_GT_Model_Tile(int sel)
 	}
 	else
 		have_archive = true;
-	return have_class & have_archive;
+	return have_class && have_archive;
 }
 
 bool CDB_Tile::Load_Archive(std::string ArchiveName, osgDB::Archive::FileNameList& archiveFileList)
@@ -2642,38 +2642,22 @@ bool CDB_Tile::Load_Class_Map(OGRLayer* poLayer, CDB_Model_RuntimeMap& clsMap)
 	}
 
 	int fsc_index = Find_Field_Index(poFDefn, "FSC", OFTInteger);
-#if 0
-	if (fsc_index < 0)
-	{
-		return false;
-	}
-#endif
+	//Required but not provided by some vendors
 
 	int bsr_index = Find_Field_Index(poFDefn, "BSR", OFTReal);
-	if (bsr_index < 0)
-	{
-		return false;
-	}
+	//Required but not provided by some vendors
 
 	int bbw_index = Find_Field_Index(poFDefn, "BBW", OFTReal);
-	if (bbw_index < 0)
-	{
-		return false;
-	}
+	//Required but not provided by some vendors
 
 	int bbl_index = Find_Field_Index(poFDefn, "BBL", OFTReal);
-	if (bbl_index < 0)
-	{
-		return false;
-	}
+	//Required but not provided by some vendors
 
 	int bbh_index = Find_Field_Index(poFDefn, "BBH", OFTReal);
-	if (bbh_index < 0)
-	{
-		return false;
-	}
+	//Required but not provided by some vendors
 
 	int ahgt_index = Find_Field_Index(poFDefn, "AHGT", OFTInteger);
+	//Required but not provided by some vendors
 
 	poLayer->ResetReading();
 	OGRFeature* dbf_feature;
