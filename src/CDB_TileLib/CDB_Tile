@@ -752,6 +752,8 @@ public:
 	bool RegisterServiceTile(std::string FileName, ElevationProviderTile * Tile);
 
 	bool Get_Elevation(coord2d Point, float &elevation);
+	
+	void ClearResources();
 
 	static CDBElevationService * getInstance();
 

@@ -5527,7 +5527,18 @@ CDBElevationService::CDBElevationService()
 
 CDBElevationService::~CDBElevationService()
 {
+	ClearResources();
+}
 
+void CDBElevationService::ClearResources()
+{
+	for (std::map<std::string, ElevationProviderTile*>::iterator it = m_TopLevelTiles.begin(); it != m_TopLevelTiles.end(); ++it)
+	{
+		ElevationProviderTile* t = it->second;
+		delete t;
+	}
+	m_TopLevelTiles.clear();
+	m_ServiceTiles.clear();
 }
 
 bool CDBElevationService::StartElevationService(std::string cdbRootDir, std::string cdbCacheDir, bool DataFromGlobal)
