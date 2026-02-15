@@ -573,14 +573,14 @@ public:
 			{
 				if (_BE_Verbose)
 				{
-					OSG_WARN << "Initialize Elevation Tile for" << mainTile->FileName(Files2check-1)  << std::endl;
+					OSG_WARN << "Initialize Elevation Tile for " << mainTile->FileName(Files2check-1)  << std::endl;
 				}
 
 				_CDBElevations->InitElevationTile(&tileExtent);
 
 				if (_BE_Verbose)
 				{
-					OSG_WARN << "Initialization Complete fo4 Elevation Tile for" << mainTile->FileName(Files2check - 1) << std::endl;
+					OSG_WARN << "Initialization Complete fo4 Elevation Tile for " << mainTile->FileName(Files2check - 1) << std::endl;
 				}
 			}
 		}
