@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-// 2014-2015 GAJ Geospatial Enterprises, Orlando FL
+// 2014-2026 GAJ Geospatial Enterprises, Orlando FL
 // Created FeatureSourceCDB for Incorporation of Common Database (CDB) support within osgEarth
 // 2016-2017 Visual Awareness Technologies and Consulting Inc. St Petersburg FL
 
@@ -124,6 +124,7 @@ public:
 	  _CDBLodNum(0),
 	  _BE_Verbose(false),
 	  _M_Contains_ABS_Z(false),
+	  _SettleOnCDB(false),
 	  _Use_GPKG_For_Features(false),
 	  _UsingFileInput(false),
 	  _LoadLights(false),
@@ -132,6 +133,7 @@ public:
 	  _GTTextureTableName(""),
 	  _HaveEditLimits(false),
 	  _Materials(false),
+	  _CDBElevations(nullptr),
 	  _SubsitutionCount(0)
 #ifdef _SAVE_OGR_OUTPUT
 	,_OGR_Output(NULL),
@@ -232,6 +234,12 @@ public:
 			bool z_in_m = _options.ABS_Z_in_M().value();
 			if (z_in_m)
 				_M_Contains_ABS_Z = true;
+		}
+		if(_options.USE_CDB_Elevation().isSet())
+		{
+			bool settlecdb = _options.USE_CDB_Elevation().value();
+			if(settlecdb)
+				_SettleOnCDB = true;
 		}
 		if(_options.USE_GPKG_Features().isSet())
 		{
@@ -475,6 +483,12 @@ public:
 			CDB_Tile::Set_Use_Gpkg_For_Features(true);
 		}
 
+		if (_SettleOnCDB)
+		{
+			_CDBElevations = CDBElevationService::getInstance();
+			_CDBElevations->StartElevationService(_rootString, "", _UsingFileInput);
+		}
+
 		if (Feature_Profile)
 		{
 			setFeatureProfile(Feature_Profile);
@@ -552,6 +566,24 @@ public:
 			mainTile->Set_SpatialFilter_Extent(_Edit_Tile_Extent);
 
 		_CDBLodNum = mainTile->CDB_LOD_Num();
+		int Files2check = mainTile->Model_Sel_Count();
+		if (_SettleOnCDB)
+		{
+			if(_CDBLodNum == 0)
+			{
+				if (_BE_Verbose)
+				{
+					OSG_WARN << "Initialize Elevation Tile for" << mainTile->FileName(Files2check-1)  << std::endl;
+				}
+
+				_CDBElevations->InitElevationTile(&tileExtent);
+
+				if (_BE_Verbose)
+				{
+					OSG_WARN << "Initialization Complete fo4 Elevation Tile for" << mainTile->FileName(Files2check - 1) << std::endl;
+				}
+			}
+		}
 		if (_BE_Verbose)
 		{
 			OSG_WARN << "CDB Feature Cursor called with CDB LOD " << _CDBLodNum << " Tile" << mainTile->FileName(0) << std::endl;
@@ -559,7 +591,6 @@ public:
 		if (_UsingFileInput)
 			mainTile->Set_SpatialFilter_Extent(tileExtent);
 
-		int Files2check = mainTile->Model_Sel_Count();
 		std::string base;
 		int FilesChecked = 0;
 		bool dataOK = false;
@@ -830,6 +861,21 @@ private:
 						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
 						poPoint->setZ(Mpos + ZoffsetPos);
 
+					}
+				}
+				else if(_SettleOnCDB)
+				{
+					OGRGeometry* geo = feat_handle->GetGeometryRef();
+					if (wkbFlatten(geo->getGeometryType()) == wkbPoint)
+					{
+						OGRPoint* poPoint = (OGRPoint*)geo;
+						coord2d Qpoint(poPoint->getX(), poPoint->getY());
+						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
+						float Elevation;
+						if(_CDBElevations->Get_Elevation(Qpoint,Elevation))
+						{
+							poPoint->setZ((double)Elevation + ZoffsetPos);
+						}
 					}
 				}
 			}
@@ -1175,6 +1221,21 @@ private:
 
 					}
 				}
+				else if (_SettleOnCDB)
+				{
+					OGRGeometry* geo = feat_handle->GetGeometryRef();
+					if (wkbFlatten(geo->getGeometryType()) == wkbPoint)
+					{
+						OGRPoint* poPoint = (OGRPoint*)geo;
+						coord2d Qpoint(poPoint->getX(), poPoint->getY());
+						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
+						float Elevation;
+						if (_CDBElevations->Get_Elevation(Qpoint, Elevation))
+						{
+							poPoint->setZ((double)Elevation + ZoffsetPos);
+						}
+					}
+				}
 			}
 
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL (2,7,0)
@@ -1279,6 +1340,21 @@ private:
 						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
 						poPoint->setZ(Mpos + ZoffsetPos);
 
+					}
+				}
+				else if (_SettleOnCDB)
+				{
+					OGRGeometry* geo = feat_handle->GetGeometryRef();
+					if (wkbFlatten(geo->getGeometryType()) == wkbPoint)
+					{
+						OGRPoint* poPoint = (OGRPoint*)geo;
+						coord2d Qpoint(poPoint->getX(), poPoint->getY());
+						ZoffsetPos = poPoint->getZ(); //Used as altitude offset
+						float Elevation;
+						if (_CDBElevations->Get_Elevation(Qpoint, Elevation))
+						{
+							poPoint->setZ((double)Elevation + ZoffsetPos);
+						}
 					}
 				}
 			}
@@ -1490,6 +1566,7 @@ private:
 	bool							_GT_LOD0_FullStack;
 	bool							_BE_Verbose;
 	bool							_M_Contains_ABS_Z;
+	bool							_SettleOnCDB;
 	bool							_Use_GPKG_For_Features;
 	bool							_UsingFileInput;
 	bool							_SubsitutionCount;
@@ -1510,6 +1587,7 @@ private:
 	bool							_Materials;
 	bool							_HaveEditLimits;
 	CDB_Tile_Extent					_Edit_Tile_Extent;
+	CDBElevationService *			_CDBElevations;
 #ifdef _SAVE_OGR_OUTPUT
 	OGR_File *						_OGR_Output;
 	std::string						_OGR_OutputName;

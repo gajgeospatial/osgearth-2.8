@@ -75,6 +75,8 @@ namespace osgEarth { namespace Drivers
 		const optional<bool>& Verbose() const { return _Verbose; }
 		optional<bool>& ABS_Z_in_M() { return _ABS_Z_in_M; }
 		const optional<bool>& ABS_Z_in_M() const { return _ABS_Z_in_M; }
+		optional<bool>& USE_CDB_Elevation() { return _USE_CDB_Elevation; }
+		const optional<bool>& USE_CDB_Elevation() const { return _USE_CDB_Elevation; }
 		optional<bool>& USE_GPKG_Features() { return _USE_GPKG_Features; }
 		const optional<bool>& USE_GPKG_Features() const { return _USE_GPKG_Features; }
 		optional<bool>& Materials() { return _Enable_Subord_Material; }
@@ -117,6 +119,7 @@ namespace osgEarth { namespace Drivers
 			conf.updateIfSet("gs_lod0_full_stack", _GS_LOD0_FullStack);
 			conf.updateIfSet("verbose", _Verbose);
 			conf.updateIfSet("abszinm", _ABS_Z_in_M);
+			conf.updateIfSet("setoncdb", _USE_CDB_Elevation);
 			conf.updateIfSet("featruesgpkg", _USE_GPKG_Features);
 			conf.updateIfSet("materials", _Enable_Subord_Material);
 			conf.updateIfSet("lights", _Lights);
@@ -152,6 +155,7 @@ namespace osgEarth { namespace Drivers
 			conf.getIfSet("verbose", _Verbose);
 			conf.getIfSet("materials", _Enable_Subord_Material);
 			conf.getIfSet("abszinm", _ABS_Z_in_M);
+			conf.getIfSet("setoncdb", _USE_CDB_Elevation);
 			conf.getIfSet("featruesgpkg", _USE_GPKG_Features);
 			conf.getIfSet("lights", _Lights);
 			conf.getIfSet("lights_lod", _LightLOD);
@@ -176,6 +180,7 @@ namespace osgEarth { namespace Drivers
 		optional<bool>_GS_LOD0_FullStack;
 		optional<bool> _Verbose;
 		optional<bool> _ABS_Z_in_M;
+		optional<bool> _USE_CDB_Elevation;
 		optional<bool> _USE_GPKG_Features;
 		optional<bool> _Enable_Subord_Material;
 		optional<bool> _Lights;

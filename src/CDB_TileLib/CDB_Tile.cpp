@@ -47,7 +47,7 @@ const double Gbl_CDB_Tiles_Per_LOD[18] = { 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0,
 
 OGR_File  Ogr_File_Instance;
 CDB_Data_Dictionary  CDB_Data_Dictionary_Instance;
-
+CDBElevationService  CDBElevationService_Instance;
 
 CDB_Tile::CDB_Tile(std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Type TileType, std::string dataset, CDB_Tile_Extent* TileExtent, bool lightmap, bool material, bool material_mask, int NLod, bool DataFromGlobal) :
 				   m_cdbRootDir(cdbRootDir), m_cdbCacheDir(cdbCacheDir),
@@ -707,6 +707,21 @@ void CDB_Tile::Set_DataFromGlobal(bool value)
 bool CDB_Tile::DataFromGlobal(void)
 {
 	return m_DataFromGlobal;
+}
+
+std::string CDB_Tile::Get_RootDir(void)
+{
+	return m_cdbRootDir;
+}
+
+std::string CDB_Tile::Get_CacheDir(void)
+{
+	return m_cdbCacheDir;
+}
+
+CDB_Tile_Type CDB_Tile::Get_TileType(void)
+{
+	return m_TileType;
 }
 
 bool CDB_Tile::Build_GS_Stack(void)
@@ -3473,6 +3488,16 @@ bool CDB_Tile::Load_Tile(void)
 	return true;
 }
 
+bool CDB_Tile::Contains(coord2d LLPoint)
+{
+	if ((m_TileExtent.West <= LLPoint.Xpos) && (m_TileExtent.East >= LLPoint.Xpos) &&
+		(m_TileExtent.South <= LLPoint.Ypos) && (m_TileExtent.North >= LLPoint.Ypos))
+		return true;
+	else
+		return false;
+}
+
+
 coord2d CDB_Tile::LL2Pix(coord2d LLPoint)
 {
 	coord2d PixCoord;
@@ -3642,6 +3667,9 @@ bool CDB_Tile::Get_Mask_Pixel(coord2d ImPix, unsigned char& MaskPix)
 
 bool CDB_Tile::Get_Elevation_Pixel(coord2d ImPix, float& ElevationPix)
 {
+	if(m_Tile_Status != Loaded)
+		return false;
+
 	int tx = (int)ImPix.Xpos;
 	int ty = (int)ImPix.Ypos;
 
@@ -5323,3 +5351,302 @@ void CDB_Data_Dictionary::ClearMaps()
 	m_BaseCategories.clear();
 }
 
+
+ElevationProviderTile::ElevationProviderTile(ElevationProviderTile* Parent, std::string cdbRootDir, std::string cdbCacheDir, CDB_Tile_Type TileType,
+					   std::string dataset, CDB_Tile_Extent* TileExtent, bool lightmap, bool material, bool material_mask, int NLod, bool DataFromGlobal)
+{
+
+	m_ElevationTile = new CDB_Tile(cdbRootDir, cdbCacheDir, TileType, dataset, TileExtent, lightmap, material, material_mask, NLod, DataFromGlobal);
+	m_TileExtent = *TileExtent;
+	m_dataset = dataset;
+	m_lightmap = false;
+	m_material = false;
+	m_material_mask = false;
+	m_NLod = 0;
+	m_is_Registered = false;
+	m_LogService = false;
+}
+
+ElevationProviderTile::~ElevationProviderTile()
+{
+	if (Have_Children())
+	{
+		for (int i = 0; i < m_Children.size(); ++i)
+		{
+			delete m_Children[i];
+		}
+	}
+	delete m_ElevationTile;
+}
+
+bool ElevationProviderTile::GeneratePyramid()
+{
+	if (GenerateChildren())
+	{
+		if(m_LogService)
+			OSG_WARN << "At Lod " << m_ElevationTile->CDB_LOD_Num() << "Has Children " << m_Children.size() << std::endl;
+
+		for (int i = 0; i < m_Children.size(); ++i)
+		{
+			m_Children[i]->GeneratePyramid();
+		}
+	}
+	if (m_LogService)
+		OSG_WARN << "At Lod " << m_ElevationTile->CDB_LOD_Num() << " All Done" << std::endl;
+	return true;
+}
+
+bool ElevationProviderTile::GenerateChildren()
+{
+	double p5EW = (m_TileExtent.East + m_TileExtent.West) * 0.5;
+	double p5NS = (m_TileExtent.North + m_TileExtent.South) * 0.5;
+
+	CDB_Tile_Extent Child_Extent;
+	//Quad 1
+	Child_Extent.North = m_TileExtent.North;
+	Child_Extent.West = m_TileExtent.West;
+	Child_Extent.East = p5EW;
+	Child_Extent.South = p5NS;
+	Add_Child(New_Child(&Child_Extent));
+
+	//Quad 2
+	Child_Extent.North = m_TileExtent.North;
+	Child_Extent.West = p5EW;
+	Child_Extent.East = m_TileExtent.East;
+	Child_Extent.South = p5NS;
+	Add_Child(New_Child(&Child_Extent));
+
+	//Quad 3
+	Child_Extent.North = p5NS;
+	Child_Extent.West = m_TileExtent.West;
+	Child_Extent.East = p5EW;
+	Child_Extent.South = m_TileExtent.South;
+	Add_Child(New_Child(&Child_Extent));
+
+	//Quad 4
+	Child_Extent.North = p5NS;
+	Child_Extent.West = p5EW;
+	Child_Extent.East = m_TileExtent.East;
+	Child_Extent.South = m_TileExtent.South;
+	Add_Child(New_Child(&Child_Extent));
+	
+	return Have_Children();
+}
+
+ElevationProviderTile * ElevationProviderTile::New_Child(CDB_Tile_Extent * Extent)
+{
+
+	ElevationProviderTile * t = new ElevationProviderTile(this, m_ElevationTile->Get_RootDir(), m_ElevationTile->Get_CacheDir(), m_ElevationTile->Get_TileType(), m_dataset,
+									 Extent, m_lightmap, m_material, m_material_mask, m_NLod, m_DataFromGlobal);
+	if (m_LogService)
+		OSG_WARN << "Trying  " << t->Get_Tile()->FileName() << " LOD " << t->Get_Tile()->CDB_LOD_Num() << std::endl;
+	return t;
+
+}
+
+CDB_Tile * ElevationProviderTile::Get_Tile()
+{
+	return m_ElevationTile;
+}
+
+bool ElevationProviderTile::Tile_Exists(void)
+{
+	return m_ElevationTile->Tile_Exists();
+}
+
+bool ElevationProviderTile::Contains(coord2d LLPoint)
+{
+	return m_ElevationTile->Contains(LLPoint);
+}
+
+ElevationProviderTile * ElevationProviderTile::GetEndChildContaining(coord2d LLPoint)
+{
+	ElevationProviderTile* ContainingChild = nullptr;
+	if (Have_Children())
+	{
+		for (int i = 0; i < m_Children.size(); ++i)
+		{
+			if (m_Children[i]->Contains(LLPoint))
+			{
+				ContainingChild = m_Children[i];
+				break;
+			}
+		}
+	}
+
+	if (ContainingChild)
+	{
+		return ContainingChild->GetEndChildContaining(LLPoint);
+	}
+	else
+	{
+		return this;
+	}
+}
+
+bool ElevationProviderTile::Get_Elevation(CDBElevationService* Service, coord2d LLPoint, float& elevation)
+{
+	if(m_ElevationTile->Load_Tile())
+	{
+		coord2d PixPoint = m_ElevationTile->LL2Pix(LLPoint);
+		if (m_ElevationTile->Get_Elevation_Pixel(PixPoint, elevation))
+		{
+			if(!m_is_Registered)
+			{ 
+				Service->RegisterServiceTile(m_ElevationTile->FileName(), this);
+				m_is_Registered = true;
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+	return false;
+}
+
+void ElevationProviderTile::Add_Child(ElevationProviderTile * child)
+{
+	if(child->Get_Tile()->Tile_Exists())
+		m_Children.push_back(child);
+	else
+		delete child;
+}
+
+bool ElevationProviderTile::Have_Children()
+{
+	if(m_Children.size() > 0)
+		return true;
+	else
+		return false;
+}
+
+CDBElevationService::CDBElevationService()
+{
+
+}
+
+CDBElevationService::~CDBElevationService()
+{
+
+}
+
+bool CDBElevationService::StartElevationService(std::string cdbRootDir, std::string cdbCacheDir, bool DataFromGlobal)
+{
+	m_cdbRootDir = cdbRootDir;
+	m_cdbCacheDir = cdbCacheDir;
+	m_have_init_data = true;
+	m_DataFromGlobal = DataFromGlobal;
+	return true;
+}
+
+bool CDBElevationService::InitElevationTile(CDB_Tile_Extent * tile_extent)
+{
+	if(!m_have_init_data)
+		return false;
+	CDB_Tile_Type type = Elevation;
+	std::string dataset = "_S001_T001_";
+	bool lightmap = false;
+	bool material = false;
+	bool material_mask = false;
+	int NLOD = 0;
+	ElevationProviderTile * TileToAdd = new ElevationProviderTile(nullptr, m_cdbRootDir, m_cdbCacheDir, type, dataset, tile_extent, 
+										lightmap, material, material_mask, NLOD, m_DataFromGlobal);
+ 
+	bool status = true;
+	std::string keyName = TileToAdd->Get_Tile()->FileName();
+	if(m_TopLevelTiles.find(keyName) != m_TopLevelTiles.end())
+	{
+		if(m_LogService)
+			OSG_WARN << "TopTile " << TileToAdd->Get_Tile()->FileName() << " LOD " << TileToAdd->Get_Tile()->CDB_LOD_Num() << " Already in Place" << std::endl;
+		status = false;
+	}
+	if(TileToAdd->Get_Tile()->CDB_LOD_Num() != 0)
+		status = false;
+	if(!TileToAdd->Tile_Exists())
+		status = false;
+	if (status)
+	{
+		if (m_LogService)
+			OSG_WARN << "Adding TopTile " << TileToAdd->Get_Tile()->FileName() << " LOD " << TileToAdd->Get_Tile()->CDB_LOD_Num() << std::endl;
+
+		TileToAdd->GeneratePyramid();
+		m_TopLevelTiles.insert(std::pair<std::string, ElevationProviderTile *>(keyName,TileToAdd));
+	}
+	else
+	{
+		delete TileToAdd;
+	}
+	return status;	
+}
+
+bool CDBElevationService::Get_Elevation(coord2d Point, float& elevation)
+{
+	//Check the last tile used first;
+	if (m_LastServiceTile)
+	{
+		if (m_LastServiceTile->Contains(Point))
+		{
+			return m_LastServiceTile->Get_Elevation(this, Point, elevation);
+		}
+		else
+			m_LastServiceTile = nullptr;
+	}
+
+	//Ok not there so check the last lod 0 tile
+	bool have_Top = false;
+	if (m_LastTop)
+	{
+		if(m_LastTop->Contains(Point))
+			have_Top = true;
+	}
+
+	if (!have_Top)
+	{
+		//Find the Toplevel tile in our list of top level tiles
+		for (std::map<std::string, ElevationProviderTile *>::iterator it = m_TopLevelTiles.begin(); it != m_TopLevelTiles.end(); ++it)
+		{
+			ElevationProviderTile * t = it->second;
+			if (t->Contains(Point))
+			{
+				m_LastTop = t;
+				have_Top = true;
+			}
+		}
+	}
+	//Make sure we have the starting point
+	if(!have_Top)
+		return false;
+
+	//Now find the highest resolution Elevation Tile containing our point
+	ElevationProviderTile * CurTile = m_LastTop->GetEndChildContaining(Point);
+	if (CurTile)
+	{
+		//Ok we have our highest resolution tile; Save it and return the elevation
+		m_LastServiceTile = CurTile;
+		return m_LastServiceTile->Get_Elevation(this, Point, elevation);
+	}
+	else
+	{
+		//This should never happen
+		return false;
+	}
+}
+
+
+bool CDBElevationService::RegisterServiceTile(std::string FileName, ElevationProviderTile * Tile)
+{
+	if (m_ServiceTiles.find(FileName) == m_ServiceTiles.end())
+	{
+		if(m_LogService)
+			OSG_WARN << "Adding Service Tile " << Tile->Get_Tile()->FileName() << " LOD " << Tile->Get_Tile()->CDB_LOD_Num() << std::endl;
+
+		m_ServiceTiles.insert(std::pair<std::string, ElevationProviderTile*>(FileName, Tile));
+		return true;
+	}
+	return false;
+}
+
+CDBElevationService * CDBElevationService::getInstance(void)
+{
+	return &CDBElevationService_Instance;
+}
