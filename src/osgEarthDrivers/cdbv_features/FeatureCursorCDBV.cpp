@@ -1,6 +1,7 @@
 /* -*-c++-*- */
-//The CDBV driver is a plugin for the osgEarth Library
-//Coppyright 2016-2017 Visual Awarness Technologies and Consulting Inc.
+//The CDBVector driver is a plugin for the osgEarth Library
+//Copyright 2016-2017 Visual Awarness Technologies and Consulting Inc.
+//Copyright 2016-2026 GAJ Geospatial Enterprises LLC
 //
 /* osgEarth - Dynamic map generation toolkit for OpenSceneGraph
  * Copyright 2015 Pelican Mapping
